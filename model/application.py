@@ -1,9 +1,12 @@
+#external
 from json import JSONEncoder
+import json
 
 class Application():
-    def __init__(self, name, source_url):
+    def __init__(self, name, sourceUrl, system):
         self.name = name
-        self.source_url = source_url
+        self.sourceUrl = sourceUrl
+        self.system = system
 
     def get_name(self):
         return self.name
@@ -14,16 +17,42 @@ class Application():
         else:
             pass
     
-    def set_source_url(self, source_url):
-        if source_url:
-            self.source_url = source_url
+    def set_sourceUrl(self, sourceUrl):
+        if sourceUrl:
+            self.sourceUrl = sourceUrl
         else:
             pass
         
-    def get_source_url(self):
-        return self.source_url
+    def get_sourceUrl(self):
+        return self.sourceUrl
+
+    def set_system(self, system):
+        if system:
+            self.system = system
+        else:
+            pass
+
+    def get_system(self):
+        return self.system
 
 class ApplicationEncoder(JSONEncoder):
+    def __init__(self):
+        self.ensure_ascii=False
+        super().__init__(ensure_ascii=False)
+
     def default(self, o):
         if type(o) == Application:
             return o.__dict__
+
+
+class ApplicationDecoder():
+    def __init__(self):
+        self.foo = ""
+
+    def decode(self, app):
+        if not type(app) == str:
+            raise TypeError('Invalid type for Application: {}'.format(app))
+
+        jsobject = json.loads(app)
+        
+        return Application(jsobject['name'], jsobject['sourceUrl'], jsobject['system'])
