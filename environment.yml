@@ -1,6 +1,12 @@
 name: default
+channels:
+- !!python/unicode
+  'conda-forge'
 dependencies:
-- pip
+- python=3.6
+- pip=9.0.1
 - pytest
-- flask
+- flask=0.12.2
 - pylint
+- Flask-RESTful=0.3.6
+# - json
