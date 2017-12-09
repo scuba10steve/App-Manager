@@ -3,10 +3,11 @@ from json import JSONEncoder
 import json
 
 class Application():
-    def __init__(self, name, sourceUrl, system):
+    def __init__(self, name, sourceUrl, system, app_id=0):
         self.name = name
         self.sourceUrl = sourceUrl
         self.system = system
+        self.app_id = app_id
 
     def get_name(self):
         return self.name
@@ -34,6 +35,15 @@ class Application():
 
     def get_system(self):
         return self.system
+
+    def set_app_id(self, app_id):
+        if app_id:
+            self.app_id = app_id
+        else:
+            pass
+    
+    def get_app_id(self):
+        return self.app_id
 
 class ApplicationEncoder(JSONEncoder):
     def __init__(self):

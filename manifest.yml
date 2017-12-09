@@ -1,0 +1,7 @@
+---
+applications:
+- name: app-manager
+  # memory: 1GB
+  command: flask run --port $PORT --host 0.0.0.0
+  env:
+    FLASK_APP: app.py

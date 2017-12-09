@@ -4,7 +4,23 @@ from manager.validator.input_validator import Validator
 from model.application import Application, ApplicationEncoder, ApplicationDecoder
 from manager.app_repo import AppRepository
 
-class AppRegistrationAPI(Resource):
+#Works with getting/updating/deleting only one app at a time
+class AppAPI(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.encoder = ApplicationEncoder()
+        self.repo = AppRepository()
+        self.parser.add_argument('sourceUrl', type=str, location='json')
+        self.parser.add_argument('system', type=str, location='json')
+        super(AppAPI, self).__init__()
+
+    def get(self, app_id):
+        app = self.repo.load_app(app_id)
+        return jsonify(self.encoder.encode(app))
+
+
+#Only allows posting of a new app
+class AppRegisterAPI(Resource):
 
     def __init__(self):
         self.parser = reqparse.RequestParser()
@@ -13,28 +29,26 @@ class AppRegistrationAPI(Resource):
         self.repo = AppRepository()
         self.parser.add_argument('sourceUrl', type=str, location='json')
         self.parser.add_argument('system', type=str, location='json')
-        super(AppRegistrationAPI, self).__init__()
+        self.parser.add_argument('name', type=str, location='json')
+        super(AppRegisterAPI, self).__init__()
 
-    def get(self, app_name):
-        app = self.repo.load_app(app_name)
-        return jsonify({'app' : self.encoder.encode(app)})
-
-    def post(self, app_name):
+    def post(self):
         new_app = None
         data = self.parser.parse_args()
-        if data and app_name:
-
+        if data:
             sourceUrl = data['sourceUrl']
             self.validator.validate_url(sourceUrl)
 
             system = data['system']
             self.validator.validate_sys(system)
 
-            new_app = Application(app_name, sourceUrl, system)
+            name = data['name']
 
-            self.repo.store_app(new_app)
+            new_app = Application(name, sourceUrl, system)
 
-        return jsonify({'resource_uri': "/app/{}".format(app_name)})
+            app_id = self.repo.store_app(new_app)
+
+        return jsonify({'resource_uri': "/app/{}".format(app_id)})
 
 
 class AppListAPI(Resource):
@@ -51,7 +65,7 @@ class AppListAPI(Resource):
             encoded = self.encoder.encode(app)
             output.append(encoded)
         
-        return jsonify({'apps': output})
+        return jsonify(output)
 
     def delete(self):
         self.repo.remove_apps()

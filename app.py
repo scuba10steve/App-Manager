@@ -4,12 +4,13 @@ from flask_restful import Api
 import os
 
 #internal
-from manager.app_manager import AppRegistrationAPI, AppListAPI
+from manager.app_manager import AppAPI, AppRegisterAPI, AppListAPI
 
 app = Flask(__name__)
 api = Api(app)
 
-api.add_resource(AppRegistrationAPI, '/app/<app_name>', endpoint='app_registration')
+api.add_resource(AppAPI, '/app/<int:app_id>', endpoint='app_inquiry_update_delete')
+api.add_resource(AppRegisterAPI, '/app', endpoint='app_registration')
 api.add_resource(AppListAPI, '/apps', endpoint='app_query')
 
 p = None
