@@ -4,7 +4,8 @@ from flask import Flask
 from flask_restful import Api
 
 #internal
-from manager.app_manager import AppAPI, AppRegisterAPI, AppListAPI
+from manager.app_api import AppAPI, AppRegisterAPI
+from manager.app_list_api import AppListAPI
 from installer.installer_api import AppInstallAPI
 
 app = Flask(__name__)

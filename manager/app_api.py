@@ -1,10 +1,10 @@
 #external
 from flask import jsonify
-from flask_restful import Resource, fields, reqparse 
+from flask_restful import Resource, reqparse 
 
 #internal
 from manager.validator.input_validator import Validator
-from model.application import Application, ApplicationEncoder, ApplicationDecoder
+from model.application import Application, ApplicationEncoder
 from repository.app_repo import AppRepository
 
 #Works with getting/updating/deleting only one app at a time
@@ -52,24 +52,3 @@ class AppRegisterAPI(Resource):
             app_id = self.repo.store_app(new_app)
 
         return jsonify({'resource_uri': "/app/{}".format(app_id)})
-
-
-class AppListAPI(Resource):
-
-    def __init__(self):
-        self.encoder = ApplicationEncoder()
-        self.repo = AppRepository()
-
-    def get(self):
-        apps = self.repo.load_apps()
-
-        output = []
-        for app in apps:
-            encoded = self.encoder.encode(app)
-            output.append(encoded)
-        
-        return jsonify(output)
-
-    def delete(self):
-        self.repo.remove_apps()
-        return jsonify()
