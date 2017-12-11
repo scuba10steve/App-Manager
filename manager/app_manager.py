@@ -1,8 +1,11 @@
+#external
 from flask import jsonify
 from flask_restful import Resource, fields, reqparse 
+
+#internal
 from manager.validator.input_validator import Validator
 from model.application import Application, ApplicationEncoder, ApplicationDecoder
-from manager.app_repo import AppRepository
+from repository.app_repo import AppRepository
 
 #Works with getting/updating/deleting only one app at a time
 class AppAPI(Resource):

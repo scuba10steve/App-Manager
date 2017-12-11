@@ -10,4 +10,6 @@ dependencies:
 - pylint
 - Flask-RESTful=0.3.6
 - sqlite3
+- requests
+- subprocess
 # - json

@@ -102,3 +102,6 @@ ENV/
 
 
 apps.json
+apps.db
+installation/*
+installers/*

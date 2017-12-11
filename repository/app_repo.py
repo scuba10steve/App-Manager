@@ -14,7 +14,7 @@ class AppRepository():
         if type(app) != Application:
             raise TypeError('Invalid type for "app": {}'.format(app))
 
-        connection = self.connect()
+        connection = self.__connect()
 
         existing_app_row = connection.execute('SELECT ID FROM APPS WHERE NAME = ? AND SYSTEM = ?', (app.get_name(), app.get_system()))
         if existing_app_row:
@@ -41,12 +41,12 @@ class AppRepository():
         if not os.path.isfile(self.repo_name):
             return apps
 
-        connection = self.connect()
+        connection = self.__connect()
 
-        rows = connection.execute('SELECT ID, NAME, SOURCE_URL, SYSTEM FROM APPS')
+        rows = connection.execute('SELECT ID, NAME, SOURCE_URL, SYSTEM, INSTALLED FROM APPS')
 
         for row in rows:
-            app = Application(row['NAME'], row['SOURCE_URL'], row['SYSTEM'], row['ID'])
+            app = Application(row['NAME'], row['SOURCE_URL'], row['SYSTEM'], row['ID'], installed=(row['INSTALLED'] == 'True'))
             apps.append(app)
 
         connection.close()
@@ -55,14 +55,14 @@ class AppRepository():
 
 
     def load_app(self, app_id):
-        connection = self.connect()
-        result = connection.execute('SELECT ID, NAME, SOURCE_URL, SYSTEM FROM APPS WHERE ID = ?', (app_id,))
+        connection = self.__connect()
+        result = connection.execute('SELECT ID, NAME, SOURCE_URL, SYSTEM, INSTALLED FROM APPS WHERE ID = ?', (app_id,))
         
         app = None
 
         if result:
             cols = result.fetchone()
-            app = Application(cols['NAME'], cols['SOURCE_URL'], cols['SYSTEM'], cols['ID'])
+            app = Application(cols['NAME'], cols['SOURCE_URL'], cols['SYSTEM'], cols['ID'], installed=(cols['INSTALLED'] == 'True'))
             
         connection.close()
         
@@ -73,32 +73,36 @@ class AppRepository():
             return
         os.remove(self.repo_name)
 
+
+    def update_app(self, app):
+        if type(app) != Application:
+            raise TypeError("Invalid type for app: " + type(app))
+
+        existing_app = self.load_app(app.get_app_id())
+
+        if app == existing_app:
+            return
+        else:
+            # Update the app
+            connection = self.__connect()
+            connection.execute('''
+            UPDATE 
+                APPS 
+            SET 
+                NAME = ?, 
+                SYSTEM = ?, 
+                SOURCE_URL = ?,
+                INSTALLED = ? 
+            WHERE 
+                ID = ?''',
+            (app.get_name(), app.get_system(), app.get_sourceUrl(), str(app.is_installed()), app.get_app_id()))
+            
+            connection.commit()
+            connection.close()
+
     
-    def connect(self):
+    def __connect(self):
         connection = sqlite3.connect(self.repo_name)
         connection.row_factory = sqlite3.Row
 
         return connection
-
-
-
-class AppRepositoryInitializer(AppRepository):
-    def __init__(self):
-        super().__init__()
-
-    
-    def initialize(self):
-        connection = self.connect()
-        table = '''CREATE TABLE `APPS` 
-        ( `ID` INTEGER, `NAME` TEXT, `SOURCE_URL` TEXT, `SYSTEM` TEXT, PRIMARY KEY(`ID`) )'''
-
-        connection.execute(table)
-        connection.commit(table)
-        index = '''CREATE INDEX `IDX_DEFAULT` ON `APPS` (
-                    `NAME`,
-                    `SYSTEM`,
-                    `SOURCE_URL`
-                );'''
-        connection.execute(index)
-        connection.commit()
-        connection.close()
