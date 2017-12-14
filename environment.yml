@@ -5,11 +5,8 @@ channels:
 dependencies:
 - python=3.6
 - pip=9.0.1
-- pytest
 - flask=0.12.2
 - pylint
 - Flask-RESTful=0.3.6
-- sqlite3
+- sqlite
 - requests
-- subprocess
-# - json

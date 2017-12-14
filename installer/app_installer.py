@@ -7,12 +7,23 @@ from subprocess import run
 from repository.app_repo import AppRepository
 from installer.app_downloader import ApplicationDownloader
 
-class ApplicationInstaller(ApplicationDownloader):
-    def __init__(self):
+class ApplicationInstaller():
+    def __init__(self, repo=None, runner=None, downloader=None):
         self.install_dir = './installation'
-        self.repo = AppRepository()
-        self.runner = CommandRunner()
-        super().__init__()
+        if not repo:
+            self.repo = AppRepository
+        else:
+            self.repo = repo
+        
+        if not runner:
+            self.runner = CommandRunner()
+        else:
+            self.runner = runner
+
+        if not downloader:
+            self.downloader = ApplicationDownloader()
+        else:
+            self.downloader = downloader
     
 
     def install(self, app_id):
@@ -26,7 +37,7 @@ class ApplicationInstaller(ApplicationDownloader):
         if not os.path.exists(install_dir):
             os.makedirs(install_dir)
 
-        f = self.download(url, app_name)
+        f = self.downloader.download(url, app_name)
 
         self.runner.run(f, install_dir)
         

@@ -68,11 +68,22 @@ class AppRepository():
         
         return app
 
+    def remove_app(self, app_id):
+        connection = self.__connect()
+        connection.execute('DELETE FROM APPS WHERE ID = ?', (app_id))
+        connection.commit()
+        connection.close()
+
     def remove_apps(self):
         if not os.path.isfile(self.repo_name):
             return
-        os.remove(self.repo_name)
 
+        connection = self.__connect()
+
+        connection.execute('DELETE * FROM APPS')
+
+        conneciton.commit()
+        connection.close()
 
     def update_app(self, app):
         if type(app) != Application:
