@@ -1,12 +1,13 @@
 #external
 import os
+
 from flask import Flask
 from flask_restful import Api
 
+from installer.installer_api import AppInstallAPI
 #internal
 from manager.app_api import AppAPI, AppRegisterAPI
 from manager.app_list_api import AppListAPI
-from installer.installer_api import AppInstallAPI
 
 app = Flask(__name__)
 api = Api(app)
@@ -16,14 +17,14 @@ api.add_resource(AppAPI, '/app/<int:app_id>', endpoint='app_inquiry_update_delet
 api.add_resource(AppRegisterAPI, '/app', endpoint='app_registration')
 api.add_resource(AppListAPI, '/apps', endpoint='app_query')
 
-p = None
+PORT = None
 try:
-    p = os.environ['PORT']
+    PORT = os.environ['PORT']
 except KeyError:
-    p = "8080"
+    PORT = "8080"
 
 
-if __name__ == "__main__" and p:
-    app.run(port=p)
+if __name__ == "__main__" and PORT:
+    app.run(port=PORT)
 elif __name__ == "__main__":
     app.run()
