@@ -1,0 +1,9 @@
+language: python
+python: 
+  - "3.6"
+install:
+  - conda env create -f=./environment.yml
+  - source activate default
+script:
+  - pytest tests/*
+  - souce deactivate
