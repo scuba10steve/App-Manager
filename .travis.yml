@@ -20,5 +20,6 @@ install:
   # Useful for debugging any issues with conda
   - conda info -a
 script:
+  - pylint *
   - pytest tests/*
   - source deactivate
