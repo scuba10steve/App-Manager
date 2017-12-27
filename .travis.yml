@@ -15,10 +15,10 @@ install:
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
-  # Useful for debugging any issues with conda
-  - conda info -a
   - conda env create -f=./environment.yml
   - source activate default
+  # Useful for debugging any issues with conda
+  - conda info -a
 script:
   - pytest tests/*
-  - souce deactivate
+  - source deactivate
