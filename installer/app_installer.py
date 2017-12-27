@@ -30,7 +30,7 @@ class ApplicationInstaller():
         app = self.repo.load_app(app_id)
         if not app:
             raise Exception("Unable to update app that doesn't exist yet")
-        url = app.get_sourceUrl()
+        url = app.get_source_url()
         app_name = app.get_name()
         install_dir = self.install_dir + '/' + app_name
 
