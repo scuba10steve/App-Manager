@@ -10,3 +10,4 @@ dependencies:
 - Flask-RESTful=0.3.6
 - sqlite
 - requests=2.18
+- pytest
