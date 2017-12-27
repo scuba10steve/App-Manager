@@ -8,5 +8,7 @@
     ],
     "python.unitTest.unittestEnabled": true,
     "python.unitTest.pyTestEnabled": false,
-    "python.unitTest.nosetestsEnabled": false
+    "python.unitTest.nosetestsEnabled": false,
+    "python.pythonPath": "C:\\Users\\steve\\Miniconda3\\python.exe",
+    "python.formatting.provider": "autopep8"
 }

@@ -1,13 +1,15 @@
-#external
+# external
 from flask import jsonify
-from flask_restful import Resource, reqparse 
+from flask_restful import Resource, reqparse
 
-#internal
+# internal
 from manager.validator.input_validator import Validator
 from model.application import Application, ApplicationEncoder
 from repository.app_repo import AppRepository
 
-#Works with getting/updating/deleting only one app at a time
+# Works with getting/updating/deleting only one app at a time
+
+
 class AppAPI(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
@@ -22,7 +24,7 @@ class AppAPI(Resource):
         return jsonify(self.encoder.encode(app))
 
 
-#Only allows posting of a new app
+# Only allows posting of a new app
 class AppRegisterAPI(Resource):
 
     def __init__(self):
@@ -39,15 +41,15 @@ class AppRegisterAPI(Resource):
         new_app = None
         data = self.parser.parse_args()
         if data:
-            sourceUrl = data['sourceUrl']
-            self.validator.validate_url(sourceUrl)
+            source_url = data['sourceUrl']
+            self.validator.validate_url(source_url)
 
             system = data['system']
             self.validator.validate_sys(system)
 
             name = data['name']
 
-            new_app = Application(name, sourceUrl, system)
+            new_app = Application(name, source_url, system)
 
             app_id = self.repo.store_app(new_app)
 

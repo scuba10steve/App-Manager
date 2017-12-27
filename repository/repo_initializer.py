@@ -1,10 +1,7 @@
 from repository.app_repo import AppRepository
 
-class AppRepositoryInitializer(AppRepository):
-    def __init__(self):
-        super().__init__()
 
-    
+class AppRepositoryInitializer(AppRepository):
     def initialize(self):
         connection = super().__connect()
         table = '''
@@ -20,17 +17,17 @@ class AppRepositoryInitializer(AppRepository):
 
         connection.execute(table)
         connection.commit()
-        
+
         index_default = '''
         CREATE INDEX `IDX_DEFAULT` ON `APPS` (
             `NAME`,
             `SYSTEM`,
             `SOURCE_URL`
         );'''
-        
+
         connection.execute(index_default)
         connection.commit()
-        
+
         installed_index = '''
         CREATE INDEX 'IDX_INSTALLED' ON 'APPS' (
             'INSTALLED'

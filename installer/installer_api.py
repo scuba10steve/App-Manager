@@ -1,8 +1,9 @@
-#external
+# external
 from flask_restful import Resource
 
-#internal
+# internal
 from installer.app_installer import ApplicationInstaller
+
 
 class AppInstallAPI(Resource):
 

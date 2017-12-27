@@ -1,11 +1,12 @@
-#external
+# external
 from json import JSONEncoder
 import json
 
+
 class Application():
-    def __init__(self, name, sourceUrl, system, app_id=0, installed=False):
+    def __init__(self, name, source_url, system, app_id=0, installed=False):
         self.name = name
-        self.sourceUrl = sourceUrl
+        self.source_url = source_url
         self.system = system
         self.app_id = app_id
         self.installed = installed
@@ -18,15 +19,15 @@ class Application():
             self.name = name
         else:
             pass
-    
-    def set_sourceUrl(self, sourceUrl):
-        if sourceUrl:
-            self.sourceUrl = sourceUrl
+
+    def set_source_url(self, source_url):
+        if source_url:
+            self.source_url = source_url
         else:
             pass
-        
-    def get_sourceUrl(self):
-        return self.sourceUrl
+
+    def get_source_url(self):
+        return self.source_url
 
     def set_system(self, system):
         if system:
@@ -42,18 +43,15 @@ class Application():
             self.app_id = app_id
         else:
             pass
-    
+
     def get_app_id(self):
         return self.app_id
 
     def set_installed(self, installed):
         self.installed = installed
-    
+
     def is_installed(self):
         return self.installed
-
-    def get_app_id(self):
-        return self.app_id
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
@@ -61,22 +59,21 @@ class Application():
 
 class ApplicationEncoder(JSONEncoder):
     def __init__(self):
-        self.ensure_ascii=False
+        self.ensure_ascii = False
         super().__init__(ensure_ascii=False)
 
     def default(self, o):
-        if type(o) == Application:
+        if isinstance(o) == Application:
             return o.__dict__
+        else:
+            raise TypeError("invalid type for encoding" + o)
 
 
 class ApplicationDecoder():
-    def __init__(self):
-        self.foo = ""
-
     def decode(self, app):
-        if not type(app) == str:
+        if not isinstance(app) == str:
             raise TypeError('Invalid type for Application: {}'.format(app))
 
         jsobject = json.loads(app)
-        
-        return Application(jsobject['name'], jsobject['sourceUrl'], jsobject['system'])
+
+        return Application(jsobject['name'], jsobject['source_url'], jsobject['system'])

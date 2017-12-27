@@ -1,5 +1,7 @@
-#external
-import os, requests
+# external
+import os
+import requests
+
 
 class ApplicationDownloader():
     def __init__(self):
@@ -11,7 +13,7 @@ class ApplicationDownloader():
         location = self.installer_cache + app_name + '.exe'
         if not os.path.isfile(location):
             response = requests.get(url, stream=True)
-            
+
             with open(location, 'wb') as handle:
                 for block in response.iter_content(1024):
                     # print("chunk written..")

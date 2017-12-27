@@ -9,13 +9,13 @@ from installer.installer_api import AppInstallAPI
 from manager.app_api import AppAPI, AppRegisterAPI
 from manager.app_list_api import AppListAPI
 
-app = Flask(__name__)
-api = Api(app)
+APP = Flask(__name__)
+API = Api(APP)
 
-api.add_resource(AppInstallAPI, '/app/<int:app_id>/install', endpoint='app_install')
-api.add_resource(AppAPI, '/app/<int:app_id>', endpoint='app_inquiry_update_delete')
-api.add_resource(AppRegisterAPI, '/app', endpoint='app_registration')
-api.add_resource(AppListAPI, '/apps', endpoint='app_query')
+API.add_resource(AppInstallAPI, '/app/<int:app_id>/install', endpoint='app_install')
+API.add_resource(AppAPI, '/app/<int:app_id>', endpoint='app_inquiry_update_delete')
+API.add_resource(AppRegisterAPI, '/app', endpoint='app_registration')
+API.add_resource(AppListAPI, '/apps', endpoint='app_query')
 
 PORT = None
 try:
@@ -25,6 +25,6 @@ except KeyError:
 
 
 if __name__ == "__main__" and PORT:
-    app.run(port=PORT)
+    APP.run(port=PORT)
 elif __name__ == "__main__":
-    app.run()
+    APP.run()

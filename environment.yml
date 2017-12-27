@@ -11,3 +11,5 @@ dependencies:
 - sqlite
 - requests=2.18
 - pytest
+- autopep8
+- rope
