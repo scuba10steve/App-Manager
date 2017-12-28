@@ -7,8 +7,11 @@ from installer.app_installer import ApplicationInstaller
 
 class AppInstallAPI(Resource):
 
-    def __init__(self):
-        self.installer = ApplicationInstaller()
+    def __init__(self, installer=None):
+        if not installer:
+            self.installer = ApplicationInstaller()
+        else:
+            self.installer = installer
 
     def post(self, app_id):
         self.installer.install(app_id)

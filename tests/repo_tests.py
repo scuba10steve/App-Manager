@@ -24,7 +24,7 @@ class test_AppRepository(unittest.TestCase):
             #when
             self.repo.load_app('1')
             #then
-            sqlite3.connect.assert_called_once()
+            sqlite3.connect.assert_called_once_with(':memory:')
             conn.execute.assert_called_once_with('SELECT ID, NAME, SOURCE_URL, SYSTEM, INSTALLED FROM APPS WHERE ID = ?', ('1',))
             conn.close.assert_called_once()
 
@@ -41,7 +41,7 @@ class test_AppRepository(unittest.TestCase):
             #when
             self.repo.load_apps()
             #then
-            sqlite3.connect.assert_called_once()
+            sqlite3.connect.assert_called_once_with(':memory:')
             conn.execute.assert_called_once_with('SELECT ID, NAME, SOURCE_URL, SYSTEM, INSTALLED FROM APPS')
             conn.close.assert_called_once()
 
