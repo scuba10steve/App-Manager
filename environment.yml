@@ -10,6 +10,6 @@ dependencies:
 - Flask-RESTful=0.3.6
 - sqlite
 - requests=2.18
-- pytest
+- pytest=3.2
 - autopep8
 - rope

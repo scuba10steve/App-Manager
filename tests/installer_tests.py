@@ -1,9 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock, Mock
 
-import sys
 import os
-sys.path.append('../')
 
 from installer.app_installer import ApplicationInstaller
 from model.application import Application

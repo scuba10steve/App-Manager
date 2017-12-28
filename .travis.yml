@@ -21,5 +21,5 @@ install:
   - conda info -a
 script:
   - pylint *
-  - python -m pytest tests/*
+  - python -m pytest
   - source deactivate

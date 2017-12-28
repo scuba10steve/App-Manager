@@ -7,10 +7,22 @@ from model.application import Application, ApplicationEncoder, ApplicationDecode
 
 
 class AppRepository():
-    def __init__(self):
-        self.repo_name = 'apps.db'
-        self.encoder = ApplicationEncoder()
-        self.decoder = ApplicationDecoder()
+    def __init__(self, encoder=None, decoder=None, repo_name=None):
+        if not repo_name:
+            self.repo_name = 'apps.db'
+        else:
+            self.repo_name = repo_name
+
+        if not encoder:
+            self.encoder = ApplicationEncoder()
+        else:
+            self.encoder = encoder
+
+        if not decoder:
+            self.decoder = ApplicationDecoder()
+        else:
+            self.decoder = decoder
+
 
     def store_app(self, app):
         if isinstance(app) != Application:
@@ -41,7 +53,7 @@ class AppRepository():
 
     def load_apps(self):
         apps = []
-        if not os.path.isfile(self.repo_name):
+        if not self.does_repo_exist():
             return apps
 
         connection = self.__connect()
@@ -81,7 +93,7 @@ class AppRepository():
         connection.close()
 
     def remove_apps(self):
-        if not os.path.isfile(self.repo_name):
+        if not self.does_repo_exist():
             return
 
         connection = self.__connect()
@@ -92,12 +104,12 @@ class AppRepository():
         connection.close()
 
     def update_app(self, app):
-        if isinstance(app) != Application:
-            raise TypeError("Invalid type for app: " + type(app))
+        if not isinstance(app, Application):
+            raise TypeError("Invalid type for app")
 
         existing_app = self.load_app(app.get_app_id())
 
-        if app == existing_app:
+        if (not existing_app) or (app == existing_app):
             return
         else:
             # Update the app
@@ -122,3 +134,7 @@ class AppRepository():
         connection.row_factory = sqlite3.Row
 
         return connection
+
+
+    def does_repo_exist(self):
+        return (self.repo_name == ':memory:') or (not os.path.isfile(self.repo_name))

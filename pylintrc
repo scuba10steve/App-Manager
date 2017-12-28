@@ -16,7 +16,8 @@ ignore=CVS,
        .vscode,
        pylintrc,
        installation,
-       installers
+       installers,
+       pytest.ini
 
 
 # Add files or directories matching the regex patterns to the blacklist. The
