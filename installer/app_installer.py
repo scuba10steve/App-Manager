@@ -12,7 +12,7 @@ class ApplicationInstaller():
     def __init__(self, repo=None, runner=None, downloader=None):
         self.install_dir = './installation'
         if not repo:
-            self.repo = AppRepository
+            self.repo = AppRepository()
         else:
             self.repo = repo
 

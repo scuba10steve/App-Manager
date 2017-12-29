@@ -21,7 +21,7 @@ PORT = None
 try:
     PORT = os.environ['PORT']
 except KeyError:
-    PORT = "8080"
+    PORT = 8080
 
 
 if __name__ == "__main__" and PORT:

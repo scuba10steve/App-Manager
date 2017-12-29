@@ -30,7 +30,7 @@ class test_ApplicationDownloader(unittest.TestCase):
     #         f_open(args)
 
     #     requests.get = Mock(side_effect=do_stuff, return_value=resp)
-        
+
     #     os.path.isfile = MagicMock(return_value=False)
 
     #     open = Mock(side_effect=fake_open)

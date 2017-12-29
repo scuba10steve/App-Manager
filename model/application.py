@@ -63,7 +63,7 @@ class ApplicationEncoder(JSONEncoder):
         super().__init__(ensure_ascii=False)
 
     def default(self, o):
-        if isinstance(o) == Application:
+        if isinstance(o, Application):
             return o.__dict__
         else:
             raise TypeError("invalid type for encoding" + o)

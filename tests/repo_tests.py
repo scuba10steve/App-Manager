@@ -76,7 +76,7 @@ class test_AppRepository(unittest.TestCase):
             self.repo.remove_apps()
             #then
             sqlite3.connect.assert_called_once_with(':memory:')
-            conn.execute.assert_called_once_with('DELETE * FROM APPS')
+            conn.execute.assert_called_once_with('DELETE FROM APPS')
             conn.close.assert_called_once()
 
             #cleanup

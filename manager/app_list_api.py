@@ -1,5 +1,5 @@
 # external
-from flask import jsonify
+from flask import jsonify as jsonify
 from flask_restful import Resource
 
 # internal
@@ -8,9 +8,16 @@ from repository.app_repo import AppRepository
 
 
 class AppListAPI(Resource):
-    def __init__(self):
-        self.encoder = ApplicationEncoder()
-        self.repo = AppRepository()
+    def __init__(self, encoder=None, repo=None):
+        if not encoder:
+            self.encoder = ApplicationEncoder()
+        else:
+            self.encoder = encoder
+
+        if not repo:
+            self.repo = AppRepository()
+        else:
+            self.repo = repo
 
     def get(self):
         apps = self.repo.load_apps()

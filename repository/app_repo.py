@@ -25,7 +25,7 @@ class AppRepository():
 
 
     def store_app(self, app):
-        if isinstance(app) != Application:
+        if not isinstance(app, Application):
             raise TypeError('Invalid type for "app": {}'.format(app))
 
         connection = self.__connect()
@@ -40,11 +40,11 @@ class AppRepository():
                 return app_id
 
         connection.execute('INSERT INTO APPS(NAME, SOURCE_URL, SYSTEM) VALUES (?, ?, ?)',
-                           (app.get_name(), app.get_sourceUrl(), app.get_system()))
+                           (app.get_name(), app.get_source_url(), app.get_system()))
         connection.commit()
 
         result = connection.execute('SELECT ID FROM APPS WHERE NAME = ? AND SYSTEM = ? AND SOURCE_URL = ?', (
-            app.get_name(), app.get_system(), app.get_sourceUrl(),))
+            app.get_name(), app.get_system(), app.get_source_url(),))
         app_id = result.fetchone()['ID']
 
         connection.close()
@@ -98,7 +98,7 @@ class AppRepository():
 
         connection = self.__connect()
 
-        connection.execute('DELETE * FROM APPS')
+        connection.execute('DELETE FROM APPS')
 
         connection.commit()
         connection.close()
@@ -124,7 +124,7 @@ class AppRepository():
                 INSTALLED = ? 
             WHERE 
                 ID = ?''',
-                               (app.get_name(), app.get_system(), app.get_sourceUrl(), str(app.is_installed()), app.get_app_id()))
+                               (app.get_name(), app.get_system(), app.get_source_url(), str(app.is_installed()), app.get_app_id()))
 
             connection.commit()
             connection.close()
@@ -137,4 +137,4 @@ class AppRepository():
 
 
     def does_repo_exist(self):
-        return (self.repo_name == ':memory:') or (not os.path.isfile(self.repo_name))
+        return (self.repo_name == ':memory:') or (os.path.isfile(self.repo_name))

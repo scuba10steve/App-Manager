@@ -1,8 +1,6 @@
 import unittest
 from unittest.mock import patch, MagicMock, Mock
 
-import os
-
 from installer.installer_api import AppInstallAPI
 
 class test_AppInstallAPI(unittest.TestCase):
