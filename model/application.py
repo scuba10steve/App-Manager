@@ -3,7 +3,7 @@ from json import JSONEncoder
 import json
 
 
-class Application():
+class Application:
     def __init__(self, name, source_url, system, app_id=0, installed=False):
         self.name = name
         self.source_url = source_url
@@ -69,7 +69,7 @@ class ApplicationEncoder(JSONEncoder):
             raise TypeError("invalid type for encoding" + o)
 
 
-class ApplicationDecoder():
+class ApplicationDecoder:
     def decode(self, app):
         if not isinstance(app) == str:
             raise TypeError('Invalid type for Application: {}'.format(app))

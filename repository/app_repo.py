@@ -28,7 +28,7 @@ class AppRepository():
         if not isinstance(app, Application):
             raise TypeError('Invalid type for "app": {}'.format(app))
 
-        connection = self.__connect()
+        connection = self.connect()
 
         existing_app_row = connection.execute(
             'SELECT ID FROM APPS WHERE NAME = ? AND SYSTEM = ?', (app.get_name(), app.get_system()))
@@ -56,7 +56,7 @@ class AppRepository():
         if not self.does_repo_exist():
             return apps
 
-        connection = self.__connect()
+        connection = self.connect()
 
         rows = connection.execute(
             'SELECT ID, NAME, SOURCE_URL, SYSTEM, INSTALLED FROM APPS')
@@ -71,7 +71,7 @@ class AppRepository():
         return apps
 
     def load_app(self, app_id):
-        connection = self.__connect()
+        connection = self.connect()
         result = connection.execute(
             'SELECT ID, NAME, SOURCE_URL, SYSTEM, INSTALLED FROM APPS WHERE ID = ?', (app_id,))
 
@@ -79,15 +79,16 @@ class AppRepository():
 
         if result:
             cols = result.fetchone()
-            app = Application(cols['NAME'], cols['SOURCE_URL'], cols['SYSTEM'],
-                              cols['ID'], installed=(cols['INSTALLED'] == 'True'))
+            if cols:
+                app = Application(cols['NAME'], cols['SOURCE_URL'], cols['SYSTEM'],
+                                cols['ID'], installed=(cols['INSTALLED'] == 'True'))
 
         connection.close()
 
         return app
 
     def remove_app(self, app_id):
-        connection = self.__connect()
+        connection = self.connect()
         connection.execute('DELETE FROM APPS WHERE ID = ?', (app_id))
         connection.commit()
         connection.close()
@@ -96,7 +97,7 @@ class AppRepository():
         if not self.does_repo_exist():
             return
 
-        connection = self.__connect()
+        connection = self.connect()
 
         connection.execute('DELETE FROM APPS')
 
@@ -113,7 +114,7 @@ class AppRepository():
             return
         else:
             # Update the app
-            connection = self.__connect()
+            connection = self.connect()
             connection.execute('''
             UPDATE 
                 APPS 
@@ -129,11 +130,15 @@ class AppRepository():
             connection.commit()
             connection.close()
 
-    def __connect(self):
+    def connect(self):
         connection = sqlite3.connect(self.repo_name)
         connection.row_factory = sqlite3.Row
 
         return connection
+
+    
+    def get_repo_name(self):
+        return self.repo_name
 
 
     def does_repo_exist(self):

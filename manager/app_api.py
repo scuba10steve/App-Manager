@@ -1,6 +1,6 @@
 # external
 from flask import jsonify
-from flask_restful import Resource, reqparse
+from flask_restful import Resource, reqparse, abort
 
 # internal
 from manager.validator.input_validator import Validator
@@ -21,7 +21,9 @@ class AppAPI(Resource):
 
     def get(self, app_id):
         app = self.repo.load_app(app_id)
-        return jsonify(self.encoder.encode(app))
+        if app:
+            return jsonify(self.encoder.encode(app))
+        abort(404)
 
 
 # Only allows posting of a new app
