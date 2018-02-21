@@ -11,10 +11,18 @@ from repository.app_repo import AppRepository
 
 
 class AppAPI(Resource):
-    def __init__(self):
+    def __init__(self, encoder=None, repo=None):
         self.parser = reqparse.RequestParser()
-        self.encoder = ApplicationEncoder()
-        self.repo = AppRepository()
+        if encoder:
+            self.encoder = encoder
+        else:
+            self.encoder = ApplicationEncoder()
+
+        if repo:
+            self.repo = repo
+        else:
+            self.repo = AppRepository()
+        
         self.parser.add_argument('sourceUrl', type=str, location='json')
         self.parser.add_argument('system', type=str, location='json')
         super(AppAPI, self).__init__()
@@ -29,11 +37,23 @@ class AppAPI(Resource):
 # Only allows posting of a new app
 class AppRegisterAPI(Resource):
 
-    def __init__(self):
+    def __init__(self, encoder=None, repo=None, validator=None):
         self.parser = reqparse.RequestParser()
-        self.encoder = ApplicationEncoder()
-        self.validator = Validator()
-        self.repo = AppRepository()
+        if encoder:
+            self.encoder = encoder
+        else:
+            self.encoder = ApplicationEncoder()
+
+        if repo:
+            self.repo = repo
+        else:
+            self.repo = AppRepository()
+        
+        if validator:
+            self.validator = validator
+        else:
+            self.validator = Validator()
+        
         self.parser.add_argument('sourceUrl', type=str, location='json')
         self.parser.add_argument('system', type=str, location='json')
         self.parser.add_argument('name', type=str, location='json')
