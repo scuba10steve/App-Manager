@@ -7,7 +7,6 @@ from flask_restful import Api
 #internal
 from manager.app_api import AppAPI, AppRegisterAPI
 from manager.app_list_api import AppListAPI
-from manager.app_initializer import ApplicationInitializer
 from repository.repo_initializer import AppRepositoryInitializer
 from repository.app_repo import AppRepository
 from installer.app_installer import ApplicationInstaller, CommandRunner
@@ -26,17 +25,15 @@ INSTALLER = ApplicationInstaller(REPO, RUNNER, DOWNLOADER)
 
 
 def main(port=5000):
-    initialize_app(APP)
+    initialize_app()
     initialize_api(API)
     APP.run(port=port)
 
 
-def initialize_app(app):
+def initialize_app():
     print("Initializing...")
-    repo_init = AppRepositoryInitializer()
+    repo_init = AppRepositoryInitializer(ENCODER, DECODER)
     repo_init.initialize()
-    app_init = ApplicationInitializer()
-    app_init.determine_os()
 
 def initialize_api(api):
     api.add_resource(AppInstallAPI, '/app/<int:app_id>/install', endpoint='app_install', resource_class_kwargs={'installer': INSTALLER})
