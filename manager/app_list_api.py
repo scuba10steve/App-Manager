@@ -1,5 +1,4 @@
 # external
-from flask import jsonify as jsonify
 from flask_restful import Resource
 
 # internal
@@ -27,8 +26,9 @@ class AppListAPI(Resource):
             encoded = self.encoder.encode(app)
             output.append(encoded)
 
-        return jsonify(output)
+        return output, 200
 
     def delete(self):
         self.repo.remove_apps()
-        return jsonify()
+
+        return None, 204

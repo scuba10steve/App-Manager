@@ -80,8 +80,7 @@ class AppRepository():
         if result:
             cols = result.fetchone()
             if cols:
-                app = Application(cols['NAME'], cols['SOURCE_URL'], cols['SYSTEM'],
-                                cols['ID'], installed=(cols['INSTALLED'] == 'True'))
+                app = Application(cols['NAME'], cols['SOURCE_URL'], cols['SYSTEM'], cols['ID'], installed=(cols['INSTALLED'] == 'True'))
 
         connection.close()
 
@@ -136,7 +135,6 @@ class AppRepository():
 
         return connection
 
-    
     def get_repo_name(self):
         return self.repo_name
 
