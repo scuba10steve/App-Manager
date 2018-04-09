@@ -13,3 +13,5 @@ dependencies:
 - pytest=3.2
 - autopep8
 - rope
+- coverage
+- nose

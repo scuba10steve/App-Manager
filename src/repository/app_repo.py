@@ -3,10 +3,10 @@ import os.path
 import sqlite3
 
 #internal
-from model.application import Application, ApplicationEncoder, ApplicationDecoder
+from src.model.application import Application, ApplicationEncoder, ApplicationDecoder
 
 
-class AppRepository():
+class AppRepository:
     def __init__(self, encoder=None, decoder=None, repo_name=None):
         if not repo_name:
             self.repo_name = 'apps.db'

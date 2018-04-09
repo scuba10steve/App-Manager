@@ -1,20 +1,20 @@
-from repository.app_repo import AppRepository
+from src.repository.app_repo import AppRepository
 
 
 class AppRepositoryInitializer(AppRepository):
-    def __init__(self):
-        super().__init__()
-        self.TABLES = ['APPS']
+    def __init__(self, encoder=None, decoder=None, repo_name=None):
+        super().__init__(encoder, decoder, repo_name)
+        self.tables = ['APPS']
 
     def tables_exist(self):
         connection = super().connect()
         rows = connection.execute("""SELECT name FROM sqlite_master WHERE type='table';""")
 
         for row in rows:
-            if row['name'] in self.TABLES:
+            if row['name'] in self.tables:
                 print('DB already initialized')
                 return True
-        
+
         connection.close()
 
         return False
@@ -23,7 +23,7 @@ class AppRepositoryInitializer(AppRepository):
     def initialize(self):
         if not self.tables_exist():
             connection = super().connect()
-            table = '''
+            apps_table = '''
             CREATE TABLE `APPS` 
             ( 
                 `ID` INTEGER, 
@@ -34,7 +34,7 @@ class AppRepositoryInitializer(AppRepository):
                 PRIMARY KEY(`ID`)
             )'''
 
-            connection.execute(table)
+            connection.execute(apps_table)
             connection.commit()
 
             index_default = '''
@@ -56,4 +56,11 @@ class AppRepositoryInitializer(AppRepository):
             connection.execute(installed_index)
             connection.commit()
 
+            # manager_metadata = '''
+            # CREATE TABLE `METADATA`
+            # (
+            #     `SYSTEM` TEXT,
+            #     `PK_MANAGER` TEXT,
+            # )
+            # '''
             connection.close()

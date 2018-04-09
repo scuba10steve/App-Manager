@@ -2,8 +2,8 @@
 from flask_restful import Resource
 
 # internal
-from model.application import ApplicationEncoder
-from repository.app_repo import AppRepository
+from src.model.application import ApplicationEncoder
+from src.repository.app_repo import AppRepository
 
 
 class AppListAPI(Resource):
