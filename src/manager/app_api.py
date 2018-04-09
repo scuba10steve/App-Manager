@@ -3,8 +3,8 @@ from flask import jsonify
 from flask_restful import Resource, reqparse, abort
 
 # internal
-from src.manager import Validator
-from src.model import Application, ApplicationEncoder
+from src.manager.validator.input_validator import Validator
+from src.model.application import Application, ApplicationEncoder
 from src.repository.app_repo import AppRepository
 
 # Works with getting/updating/deleting only one app at a time
