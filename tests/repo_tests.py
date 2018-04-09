@@ -1,21 +1,18 @@
 import unittest
-from unittest.mock import patch, MagicMock, Mock
+from unittest.mock import patch, MagicMock
 
-import sqlite3
+from src.repository.app_repo import AppRepository
 
-from model.application import Application
-from repository.app_repo import AppRepository
 
 class test_AppRepository(unittest.TestCase):
-    @patch('model.application.ApplicationDecoder')
-    @patch('model.application.ApplicationEncoder')
+    @patch('src.model.application.ApplicationDecoder')
+    @patch('src.model.application.ApplicationEncoder')
     def setUp(self, mock_encoder, mock_decoder):
         # ApplicationInstaller code to do setup
         self.repo = AppRepository(encoder=mock_encoder, decoder=mock_decoder, repo_name=':memory:')
 
-
     def test_load_app(self):
-        with patch('repository.app_repo.sqlite3') as sqlite3:
+        with patch('src.repository.app_repo.sqlite3') as sqlite3:
             #given
             conn = sqlite3.Connection(':memory:')
             conn.row_factory = None
@@ -32,7 +29,7 @@ class test_AppRepository(unittest.TestCase):
             conn.close()
 
     def test_load_apps(self):
-        with patch('repository.app_repo.sqlite3') as sqlite3:
+        with patch('src.repository.app_repo.sqlite3') as sqlite3:
             #given
             conn = sqlite3.Connection(':memory:')
             conn.row_factory = None
@@ -49,7 +46,7 @@ class test_AppRepository(unittest.TestCase):
             conn.close()
     
     def test_remove_app(self):
-        with patch('repository.app_repo.sqlite3') as sqlite3:
+        with patch('src.repository.app_repo.sqlite3') as sqlite3:
             #given
             conn = sqlite3.Connection(':memory:')
             conn.row_factory = None
@@ -66,7 +63,7 @@ class test_AppRepository(unittest.TestCase):
             conn.close()
 
     def test_remove_apps(self):
-        with patch('repository.app_repo.sqlite3') as sqlite3:
+        with patch('src.repository.app_repo.sqlite3') as sqlite3:
             #given
             conn = sqlite3.Connection(':memory:')
             conn.row_factory = None

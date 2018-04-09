@@ -2,12 +2,12 @@ import unittest
 from unittest.mock import patch, MagicMock, Mock
 
 import os
-import requests
 
-from installer.app_downloader import ApplicationDownloader
+from src.installer.app_downloader import ApplicationDownloader
+
 
 class test_ApplicationDownloader(unittest.TestCase):
-    @patch('installer.app_downloader.requests')
+    @patch('src.installer.app_downloader.requests')
     def setUp(self, requests):
         self.requests = requests
 

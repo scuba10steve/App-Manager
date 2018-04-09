@@ -1,13 +1,15 @@
 import unittest
-from unittest.mock import patch, MagicMock, Mock
+from unittest.mock import patch
 
-from model.application import Application
-from manager.app_list_api import AppListAPI
+from src.model.application import Application
+from src.manager.app_list_api import AppListAPI
+
 
 class test_AppListAPI(unittest.TestCase):
-    @patch('model.application.ApplicationEncoder')
-    @patch('repository.app_repo.AppRepository')
+    @patch('src.model.application.ApplicationEncoder')
+    @patch('src.repository.app_repo.AppRepository')
     def setUp(self, mock_encoder, mock_repo):
+        super().__init__()
         # AppListAPI code to do setup
         self.mock_encoder = mock_encoder
         self.mock_repo = mock_repo
@@ -24,7 +26,7 @@ class test_AppListAPI(unittest.TestCase):
         self.assertEqual(result, ([], 200))
         self.mock_repo.load_apps.assert_called_once()
     
-    def test_AppListAPI_post_no_results(self):
+    def test_AppListAPI_post(self):
         #given
         app = Application("foo", 'http://foo.zip', 'some_system')
         self.mock_repo.load_apps.return_value = [app]

@@ -3,14 +3,14 @@ from unittest.mock import patch, MagicMock, Mock
 
 import os
 
-from installer.app_installer import ApplicationInstaller
-from model.application import Application
+from src.installer.app_installer import ApplicationInstaller
+from src.model.application import Application
 
 
 class test_ApplicationInstaller(unittest.TestCase):
-    @patch('repository.app_repo.AppRepository')
-    @patch('installer.app_installer.CommandRunner')
-    @patch('installer.app_downloader.ApplicationDownloader')
+    @patch('src.repository.app_repo.AppRepository')
+    @patch('src.installer.app_installer.CommandRunner')
+    @patch('src.installer.app_downloader.ApplicationDownloader')
     def setUp(self, mock_repo, mock_runner, mock_downloader):
         # ApplicationInstaller code to do setup
         self.mock_repo = mock_repo
@@ -21,8 +21,8 @@ class test_ApplicationInstaller(unittest.TestCase):
 
     def test_ApplicationInstallerCreatedCorrectly(self):
         self.assertEqual(self.installer.install_dir, './installation')
-        self.assertTrue(self.mock_repo != None)
-        self.assertTrue(self.mock_runner != None)
+        self.assertTrue(self.mock_repo is not None)
+        self.assertTrue(self.mock_runner is not None)
 
     def test_ApplicationInstaller_installsApplication(self):
         # Given
@@ -50,8 +50,7 @@ class test_ApplicationInstaller(unittest.TestCase):
         # Then
         makedirs.assert_called_once_with(install_dir)
         self.mock_repo.load_app.assert_called_once_with('1')
-        self.mock_downloader.download.assert_called_once_with(
-            'http://foo', 'foo')
+        self.mock_downloader.download.assert_called_once_with('http://foo', 'foo')
         self.mock_runner.run.assert_called_once_with('foo.exe', install_dir)
         self.mock_repo.update_app.assert_called_once_with(app)
 

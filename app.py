@@ -5,14 +5,14 @@ from flask import Flask
 from flask_restful import Api
 
 #internal
-from manager.app_api import AppAPI, AppRegisterAPI
-from manager.app_list_api import AppListAPI
-from repository.repo_initializer import AppRepositoryInitializer
-from repository.app_repo import AppRepository
-from installer.app_installer import ApplicationInstaller, CommandRunner
-from installer.app_downloader import ApplicationDownloader
-from installer.installer_api import AppInstallAPI
-from model.application import ApplicationEncoder, ApplicationDecoder
+from src.manager.app_api import AppAPI, AppRegisterAPI
+from src.manager import AppListAPI
+from src.repository import AppRepositoryInitializer
+from src.repository.app_repo import AppRepository
+from src.installer import ApplicationInstaller, CommandRunner
+from src.installer import ApplicationDownloader
+from src.installer import AppInstallAPI
+from src.model import ApplicationEncoder, ApplicationDecoder
 
 
 #Global dependency injection

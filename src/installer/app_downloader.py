@@ -3,7 +3,7 @@ import os
 import requests
 
 
-class ApplicationDownloader():
+class ApplicationDownloader:
     def __init__(self):
         self.installer_cache = "./installers/"
         if not os.path.exists(self.installer_cache):
