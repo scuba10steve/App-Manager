@@ -4,11 +4,11 @@ import sys
 from subprocess import run
 
 # internal
-from repository.app_repo import AppRepository
-from installer.app_downloader import ApplicationDownloader
+from src.repository.app_repo import AppRepository
+from src.installer.app_downloader import ApplicationDownloader
 
 
-class ApplicationInstaller():
+class ApplicationInstaller:
     def __init__(self, repo=None, runner=None, downloader=None):
         self.install_dir = './installation'
         if not repo:
@@ -55,7 +55,7 @@ class ApplicationInstaller():
             self.repo.update_app(app)
 
 
-class CommandRunner():
+class CommandRunner:
     def __init__(self):
         self.dir = ''
 

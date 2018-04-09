@@ -100,7 +100,13 @@ ENV/
 # mypy
 .mypy_cache/
 
+# SonarQube stuff (some disabled temporarily):
+.scannerwork/
+# TODO: Remove from gitignore when using sonar fully
+sonar-project.properties
 
+
+.idea/
 apps.json
 apps.db
 installation/*
