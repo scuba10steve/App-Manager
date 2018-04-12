@@ -1,12 +1,5 @@
 {
-    "python.unitTest.unittestArgs": [
-        "-v",
-        "-s",
-        "./tests",
-        "-p",
-        "*tests.py"
-    ],
-    "python.unitTest.unittestEnabled": true,
+    "python.unitTest.unittestEnabled": false,
     "python.unitTest.pyTestEnabled": false,
     "python.unitTest.nosetestsEnabled": false,
     "python.pythonPath": "C:\\Users\\steve\\Miniconda3\\python.exe",
