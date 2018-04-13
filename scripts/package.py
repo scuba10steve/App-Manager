@@ -1,4 +1,5 @@
-import os, zipfile
+import os
+import zipfile
 
 
 PROJECT_DIR = '.'
@@ -16,9 +17,11 @@ def main():
         os.remove(OUTPUT_FILE)
 
     zipf = zipfile.ZipFile(OUTPUT_FILE, 'w', zipfile.ZIP_BZIP2)
+    #pylint: disable=unused-variable
+
     for root, dirs, files in os.walk(PROJECT_DIR + '/src'):
-        for f in files:
-            zipf.write(os.path.join(root, f))
+        for file in files:
+            zipf.write(os.path.join(root, file))
     zipf.write(PROJECT_DIR + '/app.py')
     zipf.write(PROJECT_DIR + '/environment.yml')
     zipf.close()
