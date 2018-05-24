@@ -27,7 +27,9 @@ after_success:
   - echo "Successful!"
   - echo "Creating package..."
 before_deploy:
-  - python ./scripts/package.py
+  - if [[ "x$TRAVIS_TAG" != "x" ]]; then
+      python ./scripts/package.py $TRAVIS_TAG
+    fi
 deploy:
   skip_cleanup: true
   provider: releases
