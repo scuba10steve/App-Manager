@@ -7,23 +7,22 @@ import sys
 PROJECT_DIR = '.'
 DEST_DIR = PROJECT_DIR + '/build'
 EXCLUDE = ''
-VERSION = ''
 
 
 def main(args):
     if args and len(args) > 1:
-        VERSION = args[1]
+        version = args[1]
 
     if not os.path.exists(DEST_DIR):
         os.makedirs(DEST_DIR)
 
-    OUTPUT_FILE = DEST_DIR + '/package-' + VERSION
+    output_file = DEST_DIR + '/package-' + version
 
-    if os.path.exists(OUTPUT_FILE):
-        os.remove(OUTPUT_FILE)
+    if os.path.exists(output_file):
+        os.remove(output_file)
 
-    zipf = zipfile.ZipFile(os.path.abspath(OUTPUT_FILE) + '.zip', 'w', zipfile.ZIP_BZIP2)
-    tarf = tarfile.open(os.path.abspath(OUTPUT_FILE) + '.tar.bz2', 'w:bz2')
+    zipf = zipfile.ZipFile(os.path.abspath(output_file) + '.zip', 'w', zipfile.ZIP_BZIP2)
+    tarf = tarfile.open(os.path.abspath(output_file) + '.tar.bz2', 'w:bz2')
     # pylint: disable=unused-variable
 
     for root, dirs, files in os.walk(PROJECT_DIR + '/src'):
