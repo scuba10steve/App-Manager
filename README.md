@@ -1,4 +1,4 @@
-# App-Manager  
+# App-Manager
 Built with Travis CI and analyzed with codacy
 [![Build Status](https://travis-ci.org/scuba10steve/App-Manager.svg?branch=master)](https://travis-ci.org/scuba10steve/App-Manager) 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3bc6bf2c2e7745dfae80ad74054fedcd)](https://www.codacy.com/app/scuba10steve/App-Manager?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=scuba10steve/App-Manager&amp;utm_campaign=Badge_Grade)
