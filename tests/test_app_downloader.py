@@ -49,15 +49,15 @@ class test_ApplicationDownloader(unittest.TestCase):
         url = 'http://foo'
         app_name = 'foo'
         # Mocks
-        os.path = MagicMock()
+        # os.path = MagicMock()
 
         os.path.isfile = MagicMock(return_value=True)
 
         #when
-        result = downloader.download(url, app_name)
+        result = downloader.download(url, app_name, 'exe')
 
         #then
-        self.assertEqual(result, './installers/foo.exe')
+        self.assertEqual(result, './working/cache/installers/foo.exe')
 
     def test_ApplicationDownloader_created(self):
         # Mocks
@@ -72,7 +72,7 @@ class test_ApplicationDownloader(unittest.TestCase):
 
         #create the downloader instance
         self.downloader = ApplicationDownloader()
-        makedirs.assert_called_once_with('./installers/')
+        makedirs.assert_called_once_with('./working/cache/installers/')
 
 
 

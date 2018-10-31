@@ -4,7 +4,7 @@ from src.repository.app_repo import AppRepository
 class AppRepositoryInitializer(AppRepository):
     def __init__(self, encoder=None, decoder=None, repo_name=None):
         super().__init__(encoder, decoder, repo_name)
-        self.tables = ['APPS']
+        self.tables = ['APPS', 'SYSTEM_METADATA']
 
     def tables_exist(self):
         connection = super().connect()
@@ -18,7 +18,6 @@ class AppRepositoryInitializer(AppRepository):
         connection.close()
 
         return False
-
 
     def initialize(self):
         if not self.tables_exist():
@@ -56,11 +55,16 @@ class AppRepositoryInitializer(AppRepository):
             connection.execute(installed_index)
             connection.commit()
 
-            # manager_metadata = '''
-            # CREATE TABLE `METADATA`
-            # (
-            #     `SYSTEM` TEXT,
-            #     `PK_MANAGER` TEXT,
-            # )
-            # '''
+            manager_metadata = '''
+            CREATE TABLE `SYSTEM_METADATA`
+            (
+                `SYS_ID` TEXT,
+                'SYS_VERSION' TEXT,
+                `PK_MANAGER` TEXT
+            )
+            '''
+
+            connection.execute(manager_metadata)
+            connection.commit()
+
             connection.close()

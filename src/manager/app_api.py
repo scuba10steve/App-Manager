@@ -11,12 +11,8 @@ from src.repository.app_repo import AppRepository
 
 
 class AppAPI(Resource):
-    def __init__(self, encoder=None, repo=None):
+    def __init__(self, repo=None):
         self.parser = reqparse.RequestParser()
-        if encoder:
-            self.encoder = encoder
-        else:
-            self.encoder = ApplicationEncoder()
 
         if repo:
             self.repo = repo
@@ -30,19 +26,15 @@ class AppAPI(Resource):
     def get(self, app_id):
         app = self.repo.load_app(app_id)
         if app:
-            return jsonify(self.encoder.encode(app))
+            return jsonify(app)
         abort(404)
 
 
 # Only allows posting of a new app
 class AppRegisterAPI(Resource):
 
-    def __init__(self, encoder=None, repo=None, validator=None):
+    def __init__(self, repo=None, validator=None):
         self.parser = reqparse.RequestParser()
-        if encoder:
-            self.encoder = encoder
-        else:
-            self.encoder = ApplicationEncoder()
 
         if repo:
             self.repo = repo

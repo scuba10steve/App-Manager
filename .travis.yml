@@ -21,7 +21,7 @@ install:
   - conda info -a
 script:
   - pylint *
-  - nosetests
+  - nosetests --exe
   - source deactivate
 after_success:
   - echo "Successful!"

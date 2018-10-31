@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 FLASK_APP="app.py"
 PORT=8080
 
