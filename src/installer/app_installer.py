@@ -4,9 +4,7 @@ import re
 from urllib.parse import urlparse
 
 # internal
-from src.installer.app_downloader import ApplicationDownloader
 from src.installer.factory.installer_factory import InstallerFactory
-from src.repository.app_repo import AppRepository
 
 
 class ApplicationInstaller:

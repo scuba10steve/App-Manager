@@ -1,4 +1,4 @@
-name: default
+name: app-manager
 channels:
 - !!python/unicode
   'conda-forge'
@@ -15,3 +15,5 @@ dependencies:
 - rope
 - coverage
 - nose=1.3.7
+- pyinstaller
+- libarchive=3.3.3

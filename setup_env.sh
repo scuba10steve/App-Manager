@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-if [[ "$(conda env list)" == *"default"* ]]; then
+
+if [[ "$(conda env list)" == *"app-manager"* ]]; then
     conda env remove -n default
 fi
 

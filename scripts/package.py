@@ -1,8 +1,7 @@
 import os
-import zipfile
-import tarfile
 import sys
-
+import tarfile
+import zipfile
 
 PROJECT_DIR = '.'
 DEST_DIR = PROJECT_DIR + '/build'

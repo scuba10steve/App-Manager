@@ -78,7 +78,7 @@ class ApplicationEncoder(JSONEncoder):
 
 class ApplicationDecoder:
     def decode(self, app):
-        if not isinstance(app) == str:
+        if not isinstance(app, str):
             raise TypeError('Invalid type for Application: {}'.format(app))
 
         jsobject = json.loads(app)

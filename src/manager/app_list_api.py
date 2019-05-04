@@ -3,7 +3,6 @@ from flask import jsonify
 from flask_restful import Resource
 
 # internal
-from src.model.application import ApplicationEncoder
 from src.repository.app_repo import AppRepository
 
 
