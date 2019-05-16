@@ -1,6 +1,8 @@
+# pylint: skip-file
 import os
 import zipfile
-import libarchive
+# TODO: Uncomment when a proper library can be found
+# import libarchive
 
 
 class Extractor:
@@ -23,17 +25,17 @@ class ZipExtractor(Extractor):
 
         return expanded
 
-
-class SevenZipExtractor(Extractor):
-    def extract(self, archive):
-        super().extract(archive)
-
-        expanded = self.working_dir + '/' + os.path.basename(archive)
-        if not os.path.exists(expanded):
-            os.makedirs(expanded)
-
-        with libarchive.file_reader(archive) as expanded_archive:
-            for entry in expanded_archive:
-                with open(expanded + '/' + str(entry), 'wb') as file:
-                    for block in entry.get_blocks():
-                        file.write(block)
+# TODO: Uncomment when a proper library can be found
+# class SevenZipExtractor(Extractor):
+#     def extract(self, archive):
+#         super().extract(archive)
+#
+#         expanded = self.working_dir + '/' + os.path.basename(archive)
+#         if not os.path.exists(expanded):
+#             os.makedirs(expanded)
+#
+#         with libarchive.file_reader(archive) as expanded_archive:
+#             for entry in expanded_archive:
+#                 with open(expanded + '/' + str(entry), 'wb') as file:
+#                     for block in entry.get_blocks():
+#                         file.write(block)
