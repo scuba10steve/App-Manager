@@ -21,7 +21,7 @@ install:
   - conda info -a
 script:
   - pylint *
-  - nosetests --exe
+  - python -m unittest discover tests/
   - source deactivate
 after_success:
   - echo "Successful!"

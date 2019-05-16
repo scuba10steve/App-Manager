@@ -108,9 +108,7 @@ class AppRepository:
 
         existing_app = self.load_app(app.get_app_id())
 
-        if (not existing_app) or (app == existing_app):
-            return
-        else:
+        if app != existing_app and existing_app:
             # Update the app
             connection = self.connect()
             connection.execute('''

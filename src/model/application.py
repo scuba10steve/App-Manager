@@ -68,6 +68,7 @@ class Application:
         return self.__dict__
 
 
+# pylint: disable=no-else-return
 class ApplicationEncoder(JSONEncoder):
     def default(self, o):
         if isinstance(o, Application):
