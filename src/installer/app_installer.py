@@ -63,6 +63,6 @@ class ApplicationInstaller:
         if os.path.exists(install_dir):
             for app_file in os.scandir(install_dir):
                 if '.exe' in app_file.name:
-                    return (app_file.path, True)
+                    return app_file.path, True
 
-        return (None, False)
+        return None, False

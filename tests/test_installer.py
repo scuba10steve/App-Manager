@@ -4,7 +4,6 @@ from unittest.mock import patch, MagicMock, Mock
 
 from src.installer.app_installer import ApplicationInstaller
 from src.model.application import Application
-from tests import mock_files
 
 
 class PseudoDirEntry:
@@ -36,15 +35,15 @@ class TestApplicationInstaller(unittest.TestCase):
         self.assertEqual(self.installer.install_dir, './working/installation')
         self.assertTrue(self.mock_repo is not None)
 
-    def test_installer_installs_application(self):
+    @patch('src.installer.factory.runner.CommandRunner.run')
+    def test_installer_installs_application(self, run):
         # Given
         # data
         app = Application('foo', 'http://somesite/foo.exe', 'bar', '1')
         app.set_installed(True)
-        install_dir = self.installer.install_dir + '/foo'
 
         # Mocks
-        makedirs = mock_files(os)
+        # makedirs = mock_files(os)
 
         self.mock_downloader.download.return_value = 'foo.exe'
         self.mock_repo.load_app.return_value = app
@@ -53,9 +52,8 @@ class TestApplicationInstaller(unittest.TestCase):
         self.installer.install('1')
 
         # Then
-        makedirs.assert_called_once_with(install_dir)
-        self.mock_repo.load_app.assert_called_once_with('1')
-        self.mock_downloader.download.assert_called_once_with('http://somesite/foo.exe', 'foo', None)
+        self.mock_repo.load_app.assert_called_with('1')
+        self.mock_downloader.download.assert_called_once_with('http://somesite/foo.exe', 'foo', 'exe')
         self.mock_repo.update_app.assert_called_once_with(app)
 
     def test_installer_uninstalls_application(self):

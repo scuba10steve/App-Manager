@@ -1,4 +1,4 @@
-from src.installer.factory.extractor import ZipExtractor, SevenZipExtractor
+from src.installer.factory.extractor import ZipExtractor
 from src.installer.factory.runner import CommandRunner
 
 
@@ -15,8 +15,7 @@ class InstallerFactory:
     def find(self):
         switch = {
             'exe': CommandRunner(),
-            'zip': ZipExtractor(),
-            '7z': SevenZipExtractor(),
+            'zip': ZipExtractor()
         }
 
         return switch.get(self.extension, None)

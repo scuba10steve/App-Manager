@@ -3,7 +3,6 @@ import unittest
 from unittest.mock import patch, MagicMock, Mock
 
 from src.installer.app_downloader import ApplicationDownloader
-from tests import mock_files
 
 
 class TestApplicationDownloader(unittest.TestCase):
@@ -24,13 +23,6 @@ class TestApplicationDownloader(unittest.TestCase):
 
         # then
         self.assertEqual(result, './working/cache/installers/foo.exe')
-
-    def test_downloader_created(self):
-        makedirs = mock_files(os)
-
-        # create the downloader instance
-        ApplicationDownloader()
-        makedirs.assert_called_once_with('./working/cache/installers/')
 
 
 if __name__ == '__main__':
