@@ -18,13 +18,13 @@ ignore=CVS,
        installation,
        installers,
        pytest.ini,
+       tests,
        sonar-project.properties
 
 
 # Add files or directories matching the regex patterns to the blacklist. The
 # regex matches against base names, not paths.
-ignore-patterns=.+_tests.+,
-                .+\.sh,
+ignore-patterns=.+\.sh,
                 .+\.yml
 
 # Python code to execute, usually for sys.path manipulation such as

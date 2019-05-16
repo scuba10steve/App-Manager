@@ -2,7 +2,7 @@
 import os.path
 import sqlite3
 
-#internal
+# internal
 from src.model.application import Application, ApplicationEncoder, ApplicationDecoder
 
 
@@ -22,7 +22,6 @@ class AppRepository:
             self.decoder = ApplicationDecoder()
         else:
             self.decoder = decoder
-
 
     def store_app(self, app):
         if not isinstance(app, Application):
@@ -70,7 +69,7 @@ class AppRepository:
 
         return apps
 
-    def load_app(self, app_id):
+    def load_app(self, app_id: str):
         connection = self.connect()
         result = connection.execute(
             'SELECT ID, NAME, SOURCE_URL, SYSTEM, INSTALLED FROM APPS WHERE ID = ?', (app_id,))
@@ -86,7 +85,7 @@ class AppRepository:
 
         return app
 
-    def remove_app(self, app_id):
+    def remove_app(self, app_id: str):
         connection = self.connect()
         connection.execute('DELETE FROM APPS WHERE ID = ?', (app_id))
         connection.commit()
@@ -109,9 +108,7 @@ class AppRepository:
 
         existing_app = self.load_app(app.get_app_id())
 
-        if (not existing_app) or (app == existing_app):
-            return
-        else:
+        if app != existing_app and existing_app:
             # Update the app
             connection = self.connect()
             connection.execute('''
@@ -138,6 +135,5 @@ class AppRepository:
     def get_repo_name(self):
         return self.repo_name
 
-
-    def does_repo_exist(self):
+    def does_repo_exist(self) -> bool:
         return (self.repo_name == ':memory:') or (os.path.isfile(self.repo_name))

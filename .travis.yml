@@ -15,13 +15,13 @@ install:
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
-  - conda env create -f=./environment.yml
-  - source activate default
+  - chmod +x setup_env.sh && ./setup_env.sh
+  - source activate app-manager
   # Useful for debugging any issues with conda
   - conda info -a
 script:
   - pylint *
-  - nosetests
+  - python -m unittest discover tests/
   - source deactivate
 after_success:
   - echo "Successful!"

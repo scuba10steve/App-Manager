@@ -1,7 +1,9 @@
 {
-    "python.unitTest.unittestEnabled": false,
-    "python.unitTest.pyTestEnabled": false,
+    // "python.unitTest.pyTestEnabled": true
+    // "python.unitTest.unittestEnabled": true
     "python.unitTest.nosetestsEnabled": false,
-    "python.pythonPath": "C:\\Users\\steve\\Miniconda3\\python.exe",
-    "python.formatting.provider": "autopep8"
+    "python.unitTest.promptToConfigure": false,
+    "python.unitTest.pyTestEnabled": false,
+    "python.unitTest.unittestEnabled": false,
+    "python.pythonPath": "python3"
 }
