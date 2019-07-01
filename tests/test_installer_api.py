@@ -1,11 +1,11 @@
 import unittest
 from unittest.mock import patch
 
-from src.python.installer.installer_api import AppInstallAPI
+from src.installer.installer_api import AppInstallAPI
 
 
 class TestAppInstallAPI(unittest.TestCase):
-    @patch('src.python.installer.app_installer.ApplicationInstaller')
+    @patch('src.installer.app_installer.ApplicationInstaller')
     def setUp(self, mock_installer):
         # AppInstallAPI code to do setup
         self.mock_installer = mock_installer

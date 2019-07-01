@@ -2,7 +2,7 @@
 from flask_restful import Resource
 
 # internal
-from src.python.installer.app_installer import ApplicationInstaller
+from src.installer.app_installer import ApplicationInstaller
 
 
 class AppInstallAPI(Resource):
