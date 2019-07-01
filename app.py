@@ -41,7 +41,7 @@ def initialize_api(api):
     api.add_resource(AppInstallAPI, '/app/<int:app_id>/install', endpoint='app_install', resource_class_kwargs={'installer': INSTALLER})
     api.add_resource(AppAPI, '/app/<int:app_id>', endpoint='app_inquiry_update_delete', resource_class_kwargs={'repo': REPO})
     api.add_resource(AppRegisterAPI, '/app', endpoint='app_registration', resource_class_kwargs={'repo': REPO})
-    api.add_resource(AppListAPI, '/apps', endpoint='app_query', resource_class_kwargs={'encoder': ENCODER, 'repo': REPO})
+    api.add_resource(AppListAPI, '/apps', endpoint='app_query', resource_class_kwargs={'repo': REPO})
 
 
 APP = Flask(__name__)

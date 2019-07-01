@@ -15,7 +15,7 @@ install:
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
-  - chmod +x setup_env.sh && ./setup_env.sh
+  - chmod +x setup_env.sh && ./scripts/setup_env.sh
   - source activate app-manager
   # Useful for debugging any issues with conda
   - conda info -a
