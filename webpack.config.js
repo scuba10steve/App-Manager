@@ -1,6 +1,7 @@
 module.exports = {
   mode: 'development',
-  entry: './src/main/js/index.js',
+  entry: './src/js/index.js',
+  devtool: 'source-map',
   module: {
     rules: [
       {
@@ -35,12 +36,12 @@ module.exports = {
     extensions: ['.html', '.js', '.jsx']
   },
   output: {
-    path: __dirname + './src/main/resources/',
-    publicPath: '/resources',
+    path: __dirname + './static/',
+    publicPath: '/static',
     filename: 'bundle.js'
   },
   devServer: {
-    contentBase: './src/main/resources/',
+    contentBase: './static/',
     clientLogLevel: 'debug',
     port: 8081,
     proxy: {

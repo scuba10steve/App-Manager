@@ -108,7 +108,7 @@ sonar-project.properties
 
 .idea/
 apps.json
-apps.db
+src/apps.db
 installation/*
 installers/*
 
