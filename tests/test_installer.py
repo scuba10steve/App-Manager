@@ -1,9 +1,9 @@
 import os
 import unittest
-from unittest.mock import patch, MagicMock, Mock
+from unittest.mock import patch, MagicMock
 
-from src.installer.app_installer import ApplicationInstaller
-from src.model.application import Application
+from src.python.installer.app_installer import ApplicationInstaller
+from src.python.model.application import Application
 
 
 class PseudoDirEntry:
@@ -21,9 +21,9 @@ class PseudoDirEntry:
 
 
 class TestApplicationInstaller(unittest.TestCase):
-    @patch('src.repository.app_repo.AppRepository')
-    @patch('src.installer.app_downloader.ApplicationDownloader')
-    @patch('src.installer.factory.installer_factory.InstallerFactory')
+    @patch('src.python.repository.app_repo.AppRepository')
+    @patch('src.python.installer.app_downloader.ApplicationDownloader')
+    @patch('src.python.installer.factory.installer_factory.InstallerFactory')
     def setUp(self, mock_repo, mock_downloader, installer_factory):
         # ApplicationInstaller code to do setup
         self.mock_repo = mock_repo
@@ -35,7 +35,7 @@ class TestApplicationInstaller(unittest.TestCase):
         self.assertEqual(self.installer.install_dir, './working/installation')
         self.assertTrue(self.mock_repo is not None)
 
-    @patch('src.installer.factory.runner.CommandRunner.run')
+    @patch('src.python.installer.factory.runner.CommandRunner.run')
     def test_installer_installs_application(self, run):
         # Given
         # data

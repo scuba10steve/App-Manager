@@ -1,5 +1,5 @@
-from src.python.installer.factory.runner import CommandRunner
 from src.python.installer.factory.extractor import ZipExtractor
+from src.python.installer.factory.runner import CommandRunner
 
 
 class InstallerFactory:
