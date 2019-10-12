@@ -11,7 +11,7 @@ install:
 script:
   - pylint *
   - python -m unittest discover tests/
-  - source deactivate
+  - deactivate
 after_success:
   - echo "Successful!"
   - echo "Creating package..."
