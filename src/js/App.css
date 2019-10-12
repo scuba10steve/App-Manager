@@ -1,0 +1,15 @@
+#root {
+    max-width: 80%;
+}
+
+.MuiContainer-fixed {
+    max-width: 80%;
+}
+
+.selected {
+    background-color: crimson;
+}
+
+.not_selected {
+    background-color: aquamarine;
+}

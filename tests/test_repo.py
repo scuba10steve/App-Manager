@@ -1,18 +1,18 @@
 import unittest
 from unittest.mock import patch, MagicMock
 
-from src.repository.app_repo import AppRepository
+from src.python.repository.app_repo import AppRepository
 
 
 class TestAppRepository(unittest.TestCase):
-    @patch('src.model.application.ApplicationDecoder')
-    @patch('src.model.application.ApplicationEncoder')
+    @patch('src.python.model.application.ApplicationDecoder')
+    @patch('src.python.model.application.ApplicationEncoder')
     def setUp(self, mock_encoder, mock_decoder):
         # ApplicationInstaller code to do setup
         self.repo = AppRepository(encoder=mock_encoder, decoder=mock_decoder, repo_name=':memory:')
 
     def test_load_app(self):
-        with patch('src.repository.app_repo.sqlite3') as sqlite3:
+        with patch('src.python.repository.app_repo.sqlite3') as sqlite3:
             # given
             conn = sqlite3.Connection(':memory:')
             conn.row_factory = None
@@ -29,7 +29,7 @@ class TestAppRepository(unittest.TestCase):
             conn.close()
 
     def test_load_apps(self):
-        with patch('src.repository.app_repo.sqlite3') as sqlite3:
+        with patch('src.python.repository.app_repo.sqlite3') as sqlite3:
             # given
             conn = sqlite3.Connection(':memory:')
             conn.row_factory = None
@@ -46,7 +46,7 @@ class TestAppRepository(unittest.TestCase):
             conn.close()
     
     def test_remove_app(self):
-        with patch('src.repository.app_repo.sqlite3') as sqlite3:
+        with patch('src.python.repository.app_repo.sqlite3') as sqlite3:
             # given
             conn = sqlite3.Connection(':memory:')
             conn.row_factory = None
@@ -63,7 +63,7 @@ class TestAppRepository(unittest.TestCase):
             conn.close()
 
     def test_remove_apps(self):
-        with patch('src.repository.app_repo.sqlite3') as sqlite3:
+        with patch('src.python.repository.app_repo.sqlite3') as sqlite3:
             # given
             conn = sqlite3.Connection(':memory:')
             conn.row_factory = None
