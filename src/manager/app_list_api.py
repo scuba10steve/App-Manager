@@ -3,7 +3,7 @@ from flask import jsonify
 from flask_restful import Resource
 
 # internal
-from src.repository import AppRepository
+from src.repository.app_repo import AppRepository
 
 
 class AppListAPI(Resource):

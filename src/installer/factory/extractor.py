@@ -2,7 +2,7 @@
 import os
 import zipfile
 # TODO: Uncomment when a proper library can be found
-# import libarchive
+import pyunpack
 
 
 class Extractor:
@@ -19,23 +19,22 @@ class ZipExtractor(Extractor):
     def extract(self, archive):
         super().extract(archive)
 
-        expanded = self.working_dir + os.path.basename(archive)
+        expanded = self.working_dir + '/' + os.path.basename(archive)
         zipped = zipfile.ZipFile(archive, mode='r')
         zipped.extractall(path=expanded)
 
         return expanded
 
-# TODO: Uncomment when a proper library can be found
-# class SevenZipExtractor(Extractor):
-#     def extract(self, archive):
-#         super().extract(archive)
-#
-#         expanded = self.working_dir + '/' + os.path.basename(archive)
-#         if not os.path.exists(expanded):
-#             os.makedirs(expanded)
-#
-#         with libarchive.file_reader(archive) as expanded_archive:
-#             for entry in expanded_archive:
-#                 with open(expanded + '/' + str(entry), 'wb') as file:
-#                     for block in entry.get_blocks():
-#                         file.write(block)
+
+class SevenZipExtractor(Extractor):
+    def extract(self, archive):
+        super().extract(archive)
+
+        expanded = self.working_dir + '/' + os.path.basename(archive)
+        if not os.path.exists(expanded):
+            os.makedirs(expanded)
+
+        zipped = pyunpack.Archive(archive)
+        zipped.extractall(expanded, auto_create_dir=True)
+
+        return expanded

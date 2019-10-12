@@ -4,23 +4,17 @@ import os
 from flask import Flask, url_for, redirect
 from flask_restful import Api
 
-from src.installer.installer import ApplicationDownloader
-from src.installer.app_installer import ApplicationInstaller
 # internal
-from src.installer.factory.runner import CommandRunner
-from src.installer.installer_api import AppInstallAPI
-from src.manager import AppAPI, AppRegisterAPI
-from src.manager import AppListAPI
+from src.installer import ApplicationDownloader, ApplicationInstaller, AppInstallAPI
+from src.manager import AppRegisterAPI, AppAPI, AppListAPI
 from src.model import ApplicationEncoder, ApplicationDecoder
-from src.repository import AppRepository
-from src.repository.repo_initializer import AppRepositoryInitializer
+from src.repository import AppRepositoryInitializer, AppRepository
 
 
 # Global dependency injection
 ENCODER = ApplicationEncoder()
 DECODER = ApplicationDecoder()
 REPO = AppRepository(ENCODER, DECODER)
-RUNNER = CommandRunner()
 DOWNLOADER = ApplicationDownloader()
 INSTALLER = ApplicationInstaller(REPO, DOWNLOADER)
 

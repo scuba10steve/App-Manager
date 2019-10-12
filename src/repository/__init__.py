@@ -1,3 +1,2 @@
-import sys
-
-sys.path.append('../')
+from src.repository.app_repo import AppRepository
+from src.repository.repo_initializer import AppRepositoryInitializer
