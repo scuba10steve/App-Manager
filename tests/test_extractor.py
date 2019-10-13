@@ -15,7 +15,7 @@ class ExtractorTests(unittest.TestCase):
         extractor.working_dir = working_dir.name
 
         #when
-        extractor.extract('resources/foo.7z')
+        extractor.extract('tests/resources/foo.7z')
 
         #then
         root_dir: List[os.DirEntry] = [entry for entry in os.scandir(extractor.working_dir) if 'foo' in entry.name]
@@ -32,7 +32,7 @@ class ExtractorTests(unittest.TestCase):
         extractor.working_dir = working_dir.name
 
         #when
-        extractor.extract('resources/foozip.zip')
+        extractor.extract('tests/resources/foozip.zip')
 
         #then
         root_dir: List[os.DirEntry] = [entry for entry in os.scandir(extractor.working_dir) if 'foo' in entry.name]

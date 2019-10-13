@@ -1,4 +1,4 @@
-from src.repository import AppRepository
+from .app_repo import AppRepository
 
 
 class AppRepositoryInitializer(AppRepository):

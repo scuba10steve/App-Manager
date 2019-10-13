@@ -38,3 +38,8 @@ class SevenZipExtractor(Extractor):
         zipped.extractall(expanded, auto_create_dir=True)
 
         return expanded
+
+
+class RarExtractor(SevenZipExtractor):
+    def extract(self, archive):
+        return super().extract(archive)
