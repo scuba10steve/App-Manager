@@ -3,8 +3,7 @@ python:
   - "3.6"
 install:
   - sudo apt-get update
-  # We do this conditionally because it saves us some downloading if the
-  # version is the same.
+  - sudo apt-get install p7zip-full -y
   - python -m virtualenv venv
   - . ./venv/bin/activate
   - python -m pip install -r requirements.txt
@@ -14,8 +13,8 @@ script:
   - deactivate
 after_success:
   - echo "Successful!"
-  - echo "Creating package..."
 before_deploy:
+  - echo "Creating package..."
   - python ./scripts/package.py $TRAVIS_TAG
 deploy:
   skip_cleanup: true

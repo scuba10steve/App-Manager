@@ -11,6 +11,9 @@ EXCLUDE = ''
 def main(args):
     if args and len(args) > 1:
         version = args[1]
+    else:
+        print("version not specified")
+        sys.exit(1)
 
     if not os.path.exists(DEST_DIR):
         os.makedirs(DEST_DIR)
@@ -31,8 +34,12 @@ def main(args):
 
     zipf.write('app.py')
     tarf.add('app.py')
-    zipf.write('environment.yml')
-    tarf.add('environment.yml')
+    zipf.write('package.json')
+    tarf.add('package.json')
+    zipf.write('requirements.txt')
+    tarf.add('requirements.txt')
+    zipf.write('webpack.config.js')
+    tarf.add('webpack.config.js')
     zipf.close()
     tarf.close()
     print("Package: '" + os.path.abspath(zipf.filename) + "' created successfully!")

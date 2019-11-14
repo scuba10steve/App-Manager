@@ -3,16 +3,14 @@ from flask import jsonify
 from flask_restful import Resource, reqparse, abort
 
 # internal
-from src.python.manager.validator.input_validator import Validator
-from src.python.model.application import Application
-from src.python.repository.app_repo import AppRepository
+from src.manager.validator.input_validator import Validator
+from src.model.application import Application
+from src.repository.app_repo import AppRepository
 
 
 # Works with getting/updating/deleting only one app at a time
-
-
 class AppAPI(Resource):
-    def __init__(self, repo=None):
+    def __init__(self, repo: AppRepository = None):
         self.parser = reqparse.RequestParser()
 
         if repo:
@@ -34,7 +32,7 @@ class AppAPI(Resource):
 # Only allows posting of a new app
 class AppRegisterAPI(Resource):
 
-    def __init__(self, repo=None, validator=None):
+    def __init__(self, repo: AppRepository = None, validator: Validator = None):
         self.parser = reqparse.RequestParser()
 
         if repo:

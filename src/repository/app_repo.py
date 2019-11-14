@@ -3,7 +3,7 @@ import os.path
 import sqlite3
 
 # internal
-from src.python.model.application import Application, ApplicationEncoder, ApplicationDecoder
+from src.model import Application, ApplicationDecoder, ApplicationEncoder
 
 
 class AppRepository:
