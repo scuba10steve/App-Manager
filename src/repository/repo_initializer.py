@@ -1,3 +1,5 @@
+from sqlite3 import Connection
+
 from .app_repo import AppRepository
 
 
@@ -6,7 +8,7 @@ class AppRepositoryInitializer(AppRepository):
         super().__init__(encoder, decoder, repo_name)
         self.tables = ['APPS', 'SYSTEM_METADATA']
 
-    def __tables_exist(self, connection):
+    def __tables_exist(self, connection: Connection):
         rows = connection.execute("""SELECT name FROM sqlite_master WHERE type='table';""")
 
         existing_tables = []

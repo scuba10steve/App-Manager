@@ -4,73 +4,73 @@ from json import JSONEncoder
 
 
 class Application:
-    def __init__(self, name, source_url, system, app_id=0, installed=False):
-        self.name = name
-        self.source_url = source_url
-        self.system = system
-        self.app_id = app_id
-        self.installed = installed
-        self.has_installer = False
-        self.has_uninstaller = False
+    def __init__(self, name: str, source_url: str, system: str, app_id: int = 0, installed: bool = False):
+        self.name: str = name
+        self.source_url: str = source_url
+        self.system: str = system
+        self.app_id: int = app_id
+        self.installed: bool = installed
+        self.has_installer: bool = False
+        self.has_uninstaller: bool = False
 
-    def get_name(self):
+    def get_name(self) -> str:
         return self.name
 
-    def set_name(self, name):
+    def set_name(self, name) -> None:
         if name:
             self.name = name
         else:
             pass
 
-    def set_source_url(self, source_url):
+    def set_source_url(self, source_url) -> None:
         if source_url:
             self.source_url = source_url
         else:
             pass
 
-    def get_source_url(self):
+    def get_source_url(self) -> str:
         return self.source_url
 
-    def set_system(self, system):
+    def set_system(self, system) -> None:
         if system:
             self.system = system
         else:
             pass
 
-    def get_system(self):
+    def get_system(self) -> str:
         return self.system
 
-    def set_app_id(self, app_id):
+    def set_app_id(self, app_id) -> None:
         if app_id:
             self.app_id = app_id
         else:
             pass
 
-    def get_app_id(self):
+    def get_app_id(self) -> int:
         return self.app_id
 
-    def set_installed(self, installed):
+    def set_installed(self, installed) -> None:
         self.installed = installed
 
-    def is_installed(self):
+    def is_installed(self) -> bool:
         return self.installed
 
-    def get_has_installer(self):
+    def get_has_installer(self) -> bool:
         return self.has_installer
 
-    def get_has_uninstaller(self):
+    def get_has_uninstaller(self) -> bool:
         return self.has_uninstaller
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return self.__dict__ == other.__dict__
 
-    def serialize(self):
+    def serialize(self) -> dict:
         return self.__dict__
 
 
 # pylint: disable=no-else-return
 class ApplicationEncoder(JSONEncoder):
-    def default(self, o):
+    def default(self, o) -> dict:
         if isinstance(o, Application):
             return o.__dict__
         else:

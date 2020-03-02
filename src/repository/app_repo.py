@@ -3,11 +3,13 @@ import os.path
 import sqlite3
 
 # internal
-from src.model import Application, ApplicationDecoder, ApplicationEncoder
+from typing import Union, List
+
+from src.model.application import Application, ApplicationDecoder, ApplicationEncoder
 
 
 class AppRepository:
-    def __init__(self, encoder=None, decoder=None, repo_name=None):
+    def __init__(self, encoder: ApplicationEncoder = None, decoder: ApplicationDecoder = None, repo_name: str = None):
         if not repo_name:
             self.repo_name = 'apps.db'
         else:
@@ -23,7 +25,7 @@ class AppRepository:
         else:
             self.decoder = decoder
 
-    def store_app(self, app):
+    def store_app(self, app: Application) -> str:
         if not isinstance(app, Application):
             raise TypeError('Invalid type for "app": {}'.format(app))
 
@@ -50,7 +52,7 @@ class AppRepository:
 
         return app_id
 
-    def load_apps(self):
+    def load_apps(self) -> List[Application]:
         apps = []
         if not self.does_repo_exist():
             return apps
@@ -69,7 +71,7 @@ class AppRepository:
 
         return apps
 
-    def load_app(self, app_id: str):
+    def load_app(self, app_id: str) -> Union[None, Application]:
         connection = self.connect()
         result = connection.execute(
             'SELECT ID, NAME, SOURCE_URL, SYSTEM, INSTALLED FROM APPS WHERE ID = ?', (app_id,))
@@ -102,7 +104,7 @@ class AppRepository:
         connection.commit()
         connection.close()
 
-    def update_app(self, app):
+    def update_app(self, app: Application):
         if not isinstance(app, Application):
             raise TypeError("Invalid type for app")
 
@@ -126,13 +128,13 @@ class AppRepository:
             connection.commit()
             connection.close()
 
-    def connect(self):
+    def connect(self) -> sqlite3.Connection:
         connection = sqlite3.connect(self.repo_name)
         connection.row_factory = sqlite3.Row
 
         return connection
 
-    def get_repo_name(self):
+    def get_repo_name(self) -> str:
         return self.repo_name
 
     def does_repo_exist(self) -> bool:

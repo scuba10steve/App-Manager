@@ -1,9 +1,10 @@
 import os
 
+
 class ApplicationInitializer:
     def __init__(self):
         osname = os.name
         if 'nt' in osname:
-            self.os_type = 'Windows'
+            self.os_type: str = 'Windows'
         elif 'unix' in osname:
-            self.os_type = 'Unix/Linux'
+            self.os_type: str = 'Unix/Linux'

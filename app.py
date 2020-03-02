@@ -5,10 +5,13 @@ from flask import Flask, url_for, redirect
 from flask_restful import Api
 
 # internal
-from src.installer import ApplicationDownloader, ApplicationInstaller, AppInstallAPI
-from src.manager import AppRegisterAPI, AppAPI, AppListAPI
-from src.model import ApplicationEncoder, ApplicationDecoder
-from src.repository import AppRepositoryInitializer, AppRepository
+from src.installer.app_installer import ApplicationDownloader, ApplicationInstaller
+from src.installer.installer_api import AppInstallAPI
+from src.manager.app_api import AppRegisterAPI, AppAPI
+from src.manager.app_list_api import AppListAPI
+from src.model.application import ApplicationEncoder, ApplicationDecoder
+from src.repository.app_repo import AppRepository
+from src.repository.repo_initializer import AppRepositoryInitializer
 
 
 # Global dependency injection
