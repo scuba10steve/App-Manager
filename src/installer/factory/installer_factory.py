@@ -1,22 +1,39 @@
-from src.installer.factory import ZipExtractor, SevenZipExtractor, CommandRunner, RarExtractor
+from typing import Union
+
+from src.installer.factory.extractor import ZipExtractor, SevenZipExtractor, RarExtractor
+from src.installer.factory.runner import CommandRunner, ChocoRunner
 
 
 class InstallerFactory:
     def __init__(self):
         self.extractor = None
         self.cmd_runner = None
-        self.extension = ''
+        self.extension: str = ''
+        self.command: str = ''
 
-    def with_extension(self, extension):
+    def with_extension(self, extension: str):
         self.extension = extension
         return self
 
-    def find(self):
-        switch = {
+    def with_command(self, command: str):
+        self.command = command
+        return self
+
+    def find(self) -> Union[CommandRunner, ZipExtractor, SevenZipExtractor, RarExtractor, ChocoRunner, None]:
+        extensions = {
             'exe': CommandRunner(),
             'zip': ZipExtractor(),
             '7z': SevenZipExtractor(),
             'rar': RarExtractor()
         }
 
-        return switch.get(self.extension, None)
+        commands = {
+            'choco': ChocoRunner()
+        }
+
+        if self.extension:
+            return extensions.get(self.extension, None)
+        if self.command:
+            return commands.get(self.command, None)
+
+        return None

@@ -1,7 +1,6 @@
 # pylint: skip-file
 import os
 import zipfile
-# TODO: Uncomment when a proper library can be found
 import pyunpack
 
 
@@ -11,12 +10,12 @@ class Extractor:
         if not os.path.exists(self.working_dir):
             os.makedirs(self.working_dir)
 
-    def extract(self, archive):
+    def extract(self, archive: str):
         print('extracting archive: ' + str(archive) + ' to working directory ' + self.working_dir)
 
 
 class ZipExtractor(Extractor):
-    def extract(self, archive):
+    def extract(self, archive: str) -> str:
         super().extract(archive)
 
         expanded = self.working_dir + '/' + os.path.basename(archive)
@@ -27,7 +26,7 @@ class ZipExtractor(Extractor):
 
 
 class SevenZipExtractor(Extractor):
-    def extract(self, archive):
+    def extract(self, archive: str) -> str:
         super().extract(archive)
 
         expanded = self.working_dir + '/' + os.path.basename(archive)
@@ -41,5 +40,5 @@ class SevenZipExtractor(Extractor):
 
 
 class RarExtractor(SevenZipExtractor):
-    def extract(self, archive):
+    def extract(self, archive: str) -> str:
         return super().extract(archive)

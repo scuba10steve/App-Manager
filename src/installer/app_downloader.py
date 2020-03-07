@@ -11,19 +11,19 @@ class ApplicationDownloader:
         if not os.path.exists(self.installer_cache):
             os.makedirs(self.installer_cache)
 
-    def download(self, url, app_name, extention):
+    def download(self, url: str, app_name: str, extension: str) -> str:
         location = self.installer_cache + app_name
 
-        if extention:
-            location = location + '.' + extention
+        if extension:
+            location = location + '.' + extension
 
         if not os.path.isfile(location):
             response = requests.get(url, stream=True)
 
-            if not extention:
-                extention = re.findall("filename=(.+)", response.headers['content-disposition'])
+            if not extension:
+                extension = re.findall("filename=(.+)", response.headers['content-disposition'])
 
-            location = location + '.' + extention
+            location = location + '.' + extension
 
             with open(location, 'wb') as handle:
                 for block in response.iter_content(1024):

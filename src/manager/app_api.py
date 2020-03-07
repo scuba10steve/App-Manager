@@ -31,7 +31,6 @@ class AppAPI(Resource):
 
 # Only allows posting of a new app
 class AppRegisterAPI(Resource):
-
     def __init__(self, repo: AppRepository = None, validator: Validator = None):
         self.parser = reqparse.RequestParser()
 

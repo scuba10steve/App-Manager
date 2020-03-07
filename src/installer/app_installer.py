@@ -1,22 +1,27 @@
 # external
 import os
 import re
+from typing import Tuple, Union
 from urllib.parse import urlparse
 
 # internal
+from src.installer.app_downloader import ApplicationDownloader
 from src.installer.factory.installer_factory import InstallerFactory
+
+from src.model.application import Application
+from src.repository.app_repo import AppRepository
 
 
 class ApplicationInstaller:
-    def __init__(self, repo=None, downloader=None, factory=None):
-        self.install_dir = './working/installation'
-        self.repo = repo
-        self.downloader = downloader
-        self.factory = factory
-        self.exec_pattern = r'.+\.exe'
+    def __init__(self, repo: AppRepository = None, downloader: ApplicationDownloader = None, factory: InstallerFactory = None):
+        self.install_dir: str = './working/installation'
+        self.repo: AppRepository = repo
+        self.downloader: ApplicationDownloader = downloader
+        self.factory: InstallerFactory = factory
+        self.exec_pattern: str = r'.+\.exe'
 
-    def install(self, app_id):
-        app = self.repo.load_app(app_id)
+    def install(self, app_id: str) -> None:
+        app: Application = self.repo.load_app(app_id)
         if not app:
             raise Exception("Unable to update app that doesn't exist yet")
         url = app.get_source_url()
@@ -28,7 +33,7 @@ class ApplicationInstaller:
 
         # find the app extenstion
         url_path = urlparse(url)
-        ext = os.path.basename(url_path.path)
+        ext: Union[str, None] = os.path.basename(url_path.path)
 
         splitted = ext.split('.')
 
@@ -48,7 +53,7 @@ class ApplicationInstaller:
         app.set_installed(True)
         self.repo.update_app(app)
 
-    def uninstall(self, app_id):
+    def uninstall(self, app_id: str) -> None:
         app = self.repo.load_app(app_id)
         uninstaller, has_uninstaller = self.__discover_uninstaller(app.get_name())
         ext = self.__discover_uninstaller(app.get_name())
@@ -58,7 +63,7 @@ class ApplicationInstaller:
             app.set_installed(False)
             self.repo.update_app(app)
 
-    def __discover_uninstaller(self, app_name):
+    def __discover_uninstaller(self, app_name: str) -> Tuple[Union[str, None], bool]:
         install_dir = self.install_dir + '/' + app_name
         if os.path.exists(install_dir):
             for app_file in os.scandir(install_dir):
