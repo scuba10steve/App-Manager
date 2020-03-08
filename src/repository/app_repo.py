@@ -32,7 +32,7 @@ class AppRepository:
         connection = self.connect()
 
         existing_app_row = connection.execute(
-            'SELECT ID FROM APPS WHERE NAME = ? AND SYSTEM = ?', (app.get_name(), app.get_system()))
+            'SELECT ID FROM APPS WHERE NAME = ? AND SYSTEM = ? AND PACKAGE = ?', (app.get_name(), app.get_system(), app.get_is_package()))
         if existing_app_row:
             existing_app = existing_app_row.fetchone()
             if existing_app:
@@ -40,12 +40,12 @@ class AppRepository:
                 connection.close()
                 return app_id
 
-        connection.execute('INSERT INTO APPS(NAME, SOURCE_URL, SYSTEM) VALUES (?, ?, ?)',
-                           (app.get_name(), app.get_source_url(), app.get_system()))
+        connection.execute('INSERT INTO APPS(NAME, SOURCE_URL, SYSTEM, INSTALLED, PACKAGE) VALUES (?, ?, ?, \'False\', ?)',
+                           (app.get_name(), app.get_source_url(), app.get_system(), app.get_is_package()))
         connection.commit()
 
-        result = connection.execute('SELECT ID FROM APPS WHERE NAME = ? AND SYSTEM = ? AND SOURCE_URL = ?', (
-            app.get_name(), app.get_system(), app.get_source_url(),))
+        result = connection.execute('SELECT ID FROM APPS WHERE NAME = ? AND SYSTEM = ? AND PACKAGE = ?', (
+            app.get_name(), app.get_system(), app.get_is_package()))
         app_id = result.fetchone()['ID']
 
         connection.close()
@@ -74,14 +74,15 @@ class AppRepository:
     def load_app(self, app_id: str) -> Union[None, Application]:
         connection = self.connect()
         result = connection.execute(
-            'SELECT ID, NAME, SOURCE_URL, SYSTEM, INSTALLED FROM APPS WHERE ID = ?', (app_id,))
+            'SELECT ID, NAME, SOURCE_URL, SYSTEM, INSTALLED, PACKAGE FROM APPS WHERE ID = ?', (app_id,))
 
         app = None
 
         if result:
             cols = result.fetchone()
             if cols:
-                app = Application(cols['NAME'], cols['SOURCE_URL'], cols['SYSTEM'], cols['ID'], installed=(cols['INSTALLED'] == 'True'))
+                app = Application(cols['NAME'], cols['SOURCE_URL'], cols['SYSTEM'], cols['ID'],
+                                  installed=(cols['INSTALLED'] == 'True'), is_package=(cols['PACKAGE'] == 'True'))
 
         connection.close()
 
@@ -89,7 +90,7 @@ class AppRepository:
 
     def remove_app(self, app_id: str):
         connection = self.connect()
-        connection.execute('DELETE FROM APPS WHERE ID = ?', (app_id))
+        connection.execute('DELETE FROM APPS WHERE ID = ?', (app_id,))
         connection.commit()
         connection.close()
 

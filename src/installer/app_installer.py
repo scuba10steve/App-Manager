@@ -2,23 +2,28 @@
 import os
 import re
 from typing import Tuple, Union
-from urllib.parse import urlparse, ParseResultBytes
+from urllib.parse import urlparse, ParseResultBytes, ParseResult
 
 # internal
 from src.installer.app_downloader import ApplicationDownloader
 from src.installer.factory.installer_factory import InstallerFactory
+from src.manager.app_initializer import ApplicationInitializer
 
 from src.model.application import Application
 from src.repository.app_repo import AppRepository
 
 
 class ApplicationInstaller:
-    def __init__(self, repo: AppRepository = None, downloader: ApplicationDownloader = None, factory: InstallerFactory = InstallerFactory()):
+    def __init__(self, repo: AppRepository = None,
+                 downloader: ApplicationDownloader = None,
+                 app_initializer: ApplicationInitializer = None,
+                 factory: InstallerFactory = InstallerFactory()):
         self.install_dir: str = './working/installation'
         self.repo: AppRepository = repo
         self.downloader: ApplicationDownloader = downloader
         self.factory: InstallerFactory = factory
         self.exec_pattern: str = r'.+\.exe'
+        self.app_initializer: ApplicationInitializer = app_initializer
 
     def install(self, app_id: str) -> None:
         app: Application = self.repo.load_app(app_id)
@@ -31,21 +36,26 @@ class ApplicationInstaller:
         if not os.path.exists(install_dir):
             os.makedirs(install_dir)
 
-        # find the app extenstion
-        url_path = urlparse(url)
-        ext = self.__discover_extension(url_path)
+        if not app.is_package:
+            # find the app extension
+            url_path: Union[ParseResultBytes, ParseResult] = urlparse(url)
+            ext = self.__discover_extension(url_path)
 
-        executable = self.downloader.download(url, app_name, ext)
+            executable = self.downloader.download(url, app_name, ext)
 
-        runner = InstallerFactory().with_extension(ext).find()
+            runner = InstallerFactory().with_extension(ext).find()
 
-        if re.match(self.exec_pattern, executable) and runner:
-            runner.run(executable, install_dir)
+            if re.match(self.exec_pattern, executable) and runner:
+                runner.run(executable, install_dir)
+        else:
+            runner = InstallerFactory().with_command('').find()
+            package_manager = self.app_initializer.package_manager
+            runner.run_cmd(package_manager, ["install", app_name])
 
         app.set_installed(True)
         self.repo.update_app(app)
 
-    def __discover_extension(self, url_path: ParseResultBytes):
+    def __discover_extension(self, url_path: Union[ParseResultBytes, ParseResult]):
         ext: Union[str, None] = os.path.basename(url_path.path)
         splitted = ext.split('.')
         if not (ext and len(splitted) > 1):
