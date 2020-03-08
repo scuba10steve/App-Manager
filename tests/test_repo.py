@@ -44,7 +44,7 @@ class TestAppRepository(unittest.TestCase):
 
             # cleanup
             conn.close()
-    
+
     def test_remove_app(self):
         with patch('src.repository.app_repo.sqlite3') as sqlite3:
             # given

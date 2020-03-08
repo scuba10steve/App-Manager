@@ -2,7 +2,7 @@
 import os
 import re
 from typing import Tuple, Union
-from urllib.parse import urlparse
+from urllib.parse import urlparse, ParseResultBytes
 
 # internal
 from src.installer.app_downloader import ApplicationDownloader
@@ -13,7 +13,7 @@ from src.repository.app_repo import AppRepository
 
 
 class ApplicationInstaller:
-    def __init__(self, repo: AppRepository = None, downloader: ApplicationDownloader = None, factory: InstallerFactory = None):
+    def __init__(self, repo: AppRepository = None, downloader: ApplicationDownloader = None, factory: InstallerFactory = InstallerFactory()):
         self.install_dir: str = './working/installation'
         self.repo: AppRepository = repo
         self.downloader: ApplicationDownloader = downloader
@@ -33,15 +33,7 @@ class ApplicationInstaller:
 
         # find the app extenstion
         url_path = urlparse(url)
-        ext: Union[str, None] = os.path.basename(url_path.path)
-
-        splitted = ext.split('.')
-
-        if not (ext and len(splitted) > 1):
-            # extension could not be determined
-            ext = None
-        else:
-            ext = splitted[len(splitted) - 1]
+        ext = self.__discover_extension(url_path)
 
         executable = self.downloader.download(url, app_name, ext)
 
@@ -53,11 +45,23 @@ class ApplicationInstaller:
         app.set_installed(True)
         self.repo.update_app(app)
 
+    def __discover_extension(self, url_path: ParseResultBytes):
+        ext: Union[str, None] = os.path.basename(url_path.path)
+        splitted = ext.split('.')
+        if not (ext and len(splitted) > 1):
+            # extension could not be determined
+            ext = None
+        else:
+            ext = splitted[len(splitted) - 1]
+        return ext
+
     def uninstall(self, app_id: str) -> None:
         app = self.repo.load_app(app_id)
         uninstaller, has_uninstaller = self.__discover_uninstaller(app.get_name())
         ext = self.__discover_uninstaller(app.get_name())
-        runner = self.factory.with_extension(ext).find()
+        runner = None
+        if ext:
+            runner = self.factory.with_extension(ext[0]).find()
         if app.is_installed() and has_uninstaller and runner:
             runner.run(uninstaller)
             app.set_installed(False)

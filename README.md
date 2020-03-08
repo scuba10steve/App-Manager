@@ -11,9 +11,6 @@ A pythonic application manager to manage applications as if they were packages.
 Make sure you have ```python``` installed and available on the path. You can check this on linux with the ```which``` command, or with the ```where``` command on windows.
 
 ---  
-A good distribution to use is [miniconda](https://conda.io/miniconda.html).  Grab a distribution for your system (version 3.6 is most compatible) and install it, it will help you with installation.
-
-
 To install the application [Grab the latest release](https://github.com/scuba10steve/App-Manager/releases)
 ### Linux:
 If downloading the ```.tar``` archive use ```tar -xf [-v for verbose]``` 
@@ -25,18 +22,18 @@ If downloading the ```.zip``` archive use ```unzip```
 If downloading the ```tar``` extract with [7-zip](https://www.7-zip.org/) or a similar other tool.
 
 ### Application dependencies:
-If you didn't use miniconda from above this step might be troublesome...
+After downloading and installing the sources, you'll have to grab all the dependencies such as ```flask``` which the app requires to run.  Provided in the releases is a `requirements.txt` file, this contains the spec for what the app needs to run, to download and install all the dependencies for the app. See example below:
+You'll want to use `virtualenv` to generate a virtual environment and install the dependencies (not a requriement but is recommended).
 
----
-After downloading and installing the sources, you'll have to grab all the dependencies such as ```flask``` which the app requires to run.  Provided in the releases is a ```environment.yml``` file, this contains the spec for what the app needs to run, to download and install all the dependencies for the app, run the ``conda env create -f=environment.yml`` command (note: the equals ```=``` sign is required). Afterward follow the prompt on the screen, see example below:
 ```bash
-#
-# To activate this environment, use:
-# > source activate default
-#
-# To deactivate an active environment, use:
-# > source deactivate
-#
+python -m virtualenv ./venv
+# If on *nux:
+. ./venv/bin/activate
+
+# If on Windows
+. ./venv/Scripts/activate
+
+# install dependencies
 ```
 You should now be prepared to run the app
 ## Running

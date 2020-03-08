@@ -10,7 +10,7 @@ from src.repository.app_repo import AppRepository
 
 # Works with getting/updating/deleting only one app at a time
 class AppAPI(Resource):
-    def __init__(self, repo: AppRepository = None):
+    def __init__(self, repo: AppRepository = None, validator: Validator = None):
         self.parser = reqparse.RequestParser()
 
         if repo:
@@ -18,13 +18,37 @@ class AppAPI(Resource):
         else:
             self.repo = AppRepository()
 
-        self.parser.add_argument('sourceUrl', type=str, location='json')
+        if validator:
+            self.validator = validator
+        else:
+            self.validator = Validator()
+
+        self.parser.add_argument('source_url', type=str, location='json')
         self.parser.add_argument('system', type=str, location='json')
+        self.parser.add_argument('name', type=str, location='json')
         super(AppAPI, self).__init__()
 
     def get(self, app_id):
         app = self.repo.load_app(app_id)
         if app:
+            return jsonify(app)
+        abort(404)
+
+    def put(self, app_id):
+        data = self.parser.parse_args()
+        source_url = data['source_url']
+        self.validator.validate_url(source_url)
+
+        system = data['system']
+        self.validator.validate_sys(system)
+
+        name = data['name']
+
+        app = self.repo.load_app(app_id)
+        if app:
+            app.set_source_url(source_url)
+            app.set_system(system)
+            app.set_name(name)
             return jsonify(app)
         abort(404)
 
@@ -44,7 +68,7 @@ class AppRegisterAPI(Resource):
         else:
             self.validator = Validator()
 
-        self.parser.add_argument('sourceUrl', type=str, location='json')
+        self.parser.add_argument('source_url', type=str, location='json')
         self.parser.add_argument('system', type=str, location='json')
         self.parser.add_argument('name', type=str, location='json')
         super(AppRegisterAPI, self).__init__()
@@ -53,7 +77,7 @@ class AppRegisterAPI(Resource):
         data = self.parser.parse_args()
         app_id = 0
         if data:
-            source_url = data['sourceUrl']
+            source_url = data['source_url']
             self.validator.validate_url(source_url)
 
             system = data['system']
