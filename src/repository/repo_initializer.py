@@ -41,6 +41,7 @@ class AppRepositoryInitializer(AppRepository):
                     `SOURCE_URL` TEXT,
                     `SYSTEM` TEXT,
                     'INSTALLED' TEXT,
+                    'PACKAGE' TEXT,
                     PRIMARY KEY(`ID`)
                 )'''
 
@@ -80,3 +81,13 @@ class AppRepositoryInitializer(AppRepository):
                 connection.commit()
 
             connection.close()
+    # pylint: disable=invalid-name
+    def store_sys_metadata(self, os: str, os_version: str, package_mgr: str):
+        connection = super().connect()
+
+        rows = connection.execute('SELECT 1 FROM SYSTEM_METADATA WHERE SYS_ID = ?', (os,))
+        if rows and not rows.fetchone():
+            connection.execute('INSERT INTO SYSTEM_METADATA(SYS_ID, SYS_VERSION, PK_MANAGER) VALUES (?, ?, ?)',
+                               (os, os_version, package_mgr))
+        connection.commit()
+        connection.close()

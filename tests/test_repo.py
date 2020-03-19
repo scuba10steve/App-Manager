@@ -22,7 +22,7 @@ class TestAppRepository(unittest.TestCase):
             self.repo.load_app('1')
             # then
             sqlite3.connect.assert_called_once_with(':memory:')
-            conn.execute.assert_called_once_with('SELECT ID, NAME, SOURCE_URL, SYSTEM, INSTALLED FROM APPS WHERE ID = ?', ('1',))
+            conn.execute.assert_called_once_with('SELECT ID, NAME, SOURCE_URL, SYSTEM, INSTALLED, PACKAGE FROM APPS WHERE ID = ?', ('1',))
             conn.close.assert_called_once()
 
             # cleanup
@@ -44,7 +44,7 @@ class TestAppRepository(unittest.TestCase):
 
             # cleanup
             conn.close()
-    
+
     def test_remove_app(self):
         with patch('src.repository.app_repo.sqlite3') as sqlite3:
             # given
@@ -56,7 +56,7 @@ class TestAppRepository(unittest.TestCase):
             self.repo.remove_app('1')
             # then
             sqlite3.connect.assert_called_once_with(':memory:')
-            conn.execute.assert_called_once_with('DELETE FROM APPS WHERE ID = ?', '1')
+            conn.execute.assert_called_once_with('DELETE FROM APPS WHERE ID = ?', ('1',))
             conn.close.assert_called_once()
 
             # cleanup

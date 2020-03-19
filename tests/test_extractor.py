@@ -2,7 +2,6 @@ import os
 import tempfile
 import unittest
 from typing import List
-from unittest.mock import patch, MagicMock
 
 from src.installer.factory.extractor import SevenZipExtractor, ZipExtractor
 

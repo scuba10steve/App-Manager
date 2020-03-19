@@ -21,7 +21,7 @@ class TestAppInstallAPI(unittest.TestCase):
         # then
         self.assertEqual(result, (None, 204))
         self.mock_installer.install.assert_called_once_with(app_id)
-    
+
     def test_install_api_delete(self):
         # given
         app_id = '1'
