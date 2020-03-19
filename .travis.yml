@@ -14,8 +14,10 @@ script:
 after_success:
   - echo "Successful!"
 before_deploy:
+  - . ./venv/bin/activate
   - echo "Creating package..."
   - python ./scripts/package.py $TRAVIS_TAG
+  - deactivate
 deploy:
   skip_cleanup: true
   provider: releases
