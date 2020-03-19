@@ -1,30 +1,33 @@
 language: python
-python: 
-  - "3.6"
+python:
+- '3.6'
 install:
-  - sudo apt-get update
-  - sudo apt-get install p7zip-full -y
-  - python -m virtualenv venv
-  - . ./venv/bin/activate
-  - python -m pip install -r requirements.txt
+- sudo apt-get update
+- sudo apt-get install p7zip-full -y
+- python -m virtualenv venv
+- ". ./venv/bin/activate"
+- python -m pip install -r requirements.txt
 script:
-  - pylint *
-  - python -m unittest discover tests/
-  - deactivate
+- pylint *
+- python -m unittest discover tests/
+- deactivate
 after_success:
-  - echo "Successful!"
+- echo "Successful!"
 before_deploy:
-  - . ./venv/bin/activate
-  - echo "Creating package..."
-  - python ./scripts/package.py $TRAVIS_TAG
-  - deactivate
+- ". ./venv/bin/activate"
+- echo "Creating package..."
+- python ./scripts/package.py $TRAVIS_TAG
+- deactivate
 deploy:
   skip_cleanup: true
   provider: releases
-  api_key: 
+  api_key:
     secure: px/9tAPHY13Bn9oa2o+Wc5FJF/0F8iVWZFtYseggKoAFF+naMkOpn1V/V07+7VYHUkbhv6JocEpZCXgp7yv52AVKcoHsJC66PCb4ziCCSo4HAAKyGTxLKKRGQAxVToFbV3Qn7yNjt7YQLb67c3qI6FnjEIqOVeWyzyaNRCpQMPkeFIHpTfBP2C+wA442A7DZ/bcDAWPblMEUPHmmkojJfCgE5wxQfCVY+fIJqcs6Gin1SCfSSrkdTKcjRmSRhVvu5SuqFjX+sR3komc2L9b2bUiC2uHnstwd8tds+ilxCVPEl3IFhWYlfVjHOx5IYIKK9S8uVbJG7Rgqebo+C8lDEwzFFnIXJZkpJq5vH4TU51peqKk5fDX6e4XiQ8qQm+HcOcrcoz0KyUuX9Lp3XmFgrsAgS3wqzW5wjN2SZTPJ0jQrXrem/mS+zlRDOHwc8YeDxTStBZRsUyaoLjbKi6nqnW7uXYWDGq9tej/FX2TRaRG80iGrmj7vnnJJnROMyuR4YRRkYfxamco1gGZju8R5jvFknfiyWRaDtrENJX1SLNPzw5WtTY0yx/UIQma3l8t77cKUzjnnUCfhRchDYutZ5CkTle9q6Rs4LvtbV53bIYSDHoYTU0pTRk/c0/GNqABMlzg4UcgP4KPCbOqmD7Pze3ImefX5u3fGJDYwSHGWW2k=
   file_glob: true
   file: build/*
   on:
     repo: scuba10steve/App-Manager
     tags: true
+env:
+  global:
+    secure: CKDTp3oFAqOONnAHlZlGSU9uIE7/GB3l36QkWNsMgOo3gvZJ4eBoU041tCfLI6sdKeuaQ5UwNWebgyhSqivOownF4e8wNRfUP9br/BY8a2PPvlzQLhRq4JutJSBJY/5FBkwIeiHtOabuPff4UT0cRfhgI3dWfLbt8mlK0OiUFlOkELBplxdyyqGKCQEdXXU6nE+r8rCXZHvtj9DJzryNAIqge55M/lDDXF6s9YurO64UomqoYFVA0Aa8clzgV/d6MXbijMcAmEmpEcyRTL73tlYo5Nze7wP8+9m8qv9d3gxFiqTl/T0AKjA5Z3cAbEO2pP2fbqg8ARgyPvu9XT0fOB93IgP2ue1z1VeNCLVF9gozIqzXBGDPtg9ncQ3WGcS3Rov5J/1CqY+Vg/DUJ2gYUKU28WFRKR2ooTOTsLtZfOWe4KL30tp1kVa1sBFiCRRFS8RsryNyR8suw/yNVRbAi8cWmYBb10JjIVmUJpYYlu+2pBB8IofaFOjrOFKZeOVwDXDaGwVd1kuyGkAk1TJn3kbWpWyHhxkomjv17E98M2j2PceovhBeJCL47rQ1l8fzibXT9EK/K9R3YykFujspWzMfXKM4c1kYPwbMBPwDMJhMhVYT1jaELermfDeyI4nZ42Fc/A3ff7Djl2N5yQz05+C+px0tWdGPRtshc2wYxJs=
