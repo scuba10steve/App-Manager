@@ -32,3 +32,14 @@ class ChocoRunner(CommandRunner):
         cmd = os.path.join(self.choco_root, "bin", "choco")
 
         super().run_cmd(cmd, packages)
+
+
+class HomebrewRunner(CommandRunner):
+    def __init__(self):
+        super()
+
+    def run(self, packages: List[str], install_dir: str = None):
+        if sys.platform != "linux" or sys.platform != "darwin":
+            raise Exception("Not running a *nix plaform!!! Homebrew isn't available for Windows")
+
+        super().run_cmd("brew install", packages)

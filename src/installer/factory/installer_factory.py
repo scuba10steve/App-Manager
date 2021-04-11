@@ -1,7 +1,7 @@
 from typing import Union
 
 from src.installer.factory.extractor import ZipExtractor, SevenZipExtractor, RarExtractor
-from src.installer.factory.runner import CommandRunner, ChocoRunner
+from src.installer.factory.runner import CommandRunner, ChocoRunner, HomebrewRunner
 
 
 class InstallerFactory:
@@ -19,7 +19,7 @@ class InstallerFactory:
         self.command = command
         return self
 
-    def find(self) -> Union[CommandRunner, ZipExtractor, SevenZipExtractor, RarExtractor, ChocoRunner, None]:
+    def find(self) -> Union[CommandRunner, ZipExtractor, SevenZipExtractor, RarExtractor, ChocoRunner, HomebrewRunner, None]:
         extensions = {
             'exe': CommandRunner(),
             'zip': ZipExtractor(),
@@ -28,7 +28,8 @@ class InstallerFactory:
         }
 
         commands = {
-            'choco': ChocoRunner()
+            'choco': ChocoRunner(),
+            'brew': HomebrewRunner()
         }
 
         if self.extension:
