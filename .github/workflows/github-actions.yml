@@ -22,6 +22,7 @@ jobs:
         python-version: 3.9
     - name: Install dependencies
       run: |
+        sudo apt-get install p7zip-full -y
         python -m pip install --upgrade pip
         pip install pylint pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
