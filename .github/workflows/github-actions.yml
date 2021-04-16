@@ -30,8 +30,7 @@ jobs:
       run: |
         pylint *
     - name: Test with unittest
-      run: |
-        python -m unittest discover tests/
+      run: scripts/test.sh
     # - name: Package
     #   run: |
     #     . ./venv/bin/activate
