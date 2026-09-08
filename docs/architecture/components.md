@@ -68,3 +68,12 @@ this documentation task (spec: out of scope):
   declares both (`src/model/application.py:14-15`), they're serialized to
   every API response, but nothing in the codebase ever sets either to
   `True`. Treat them as always-`False` placeholders, not real signals.
+- **`is_package` always reads back from the database as `False`.** The
+  `PACKAGE` column is bound with a Python `bool` (`src/repository/app_repo.py:44`),
+  which `sqlite3` coerces to int (`1`/`0`), then SQLite's TEXT affinity converts
+  to string (`'1'`/`'0'`) instead of the intended `'True'`/`'False'`.
+  `AppRepository.load_app` checks `cols['PACKAGE'] == 'True'` (`src/repository/app_repo.py:85`),
+  which never matches `'1'`/`'0'`, so `is_package` is reconstructed as `False`.
+  This makes the package-manager install branch (`src/installer/app_installer.py:50-53`)
+  **unreachable through the normal REST flow** (`POST /app/<id>/install` on a package registration).
+  See [data-model.md](data-model.md) for the schema details.

@@ -30,7 +30,7 @@ exercised by the test suite; no production code path calls it.
 | `SOURCE_URL` | TEXT | |
 | `SYSTEM` | TEXT | |
 | `INSTALLED` | TEXT | stores the **string** `'True'`/`'False'`, not a SQLite boolean/integer |
-| `PACKAGE` | TEXT | same string-boolean convention as `INSTALLED` |
+| `PACKAGE` | TEXT | bound as a Python `bool`, which `sqlite3` coerces to int (`1`/`0`), then SQLite's TEXT affinity converts to string (`'1'`/`'0'`) — **not** `'True'`/`'False'` like `INSTALLED`, causing `is_package` to always read back as `False` (see [components.md](components.md#known-defects-worth-knowing-before-you-touch-this-code)) |
 
 Indexes: `IDX_DEFAULT` on `(NAME, SYSTEM, SOURCE_URL)`, `IDX_INSTALLED` on
 `(INSTALLED)`. There is **no `UNIQUE` constraint** — de-duplication on
