@@ -43,7 +43,9 @@ instead of creating a duplicate row (`AppRepository.store_app`).
 ## `DELETE /app/<id>`
 
 `404` if the app doesn't exist. `409` if `installed` is currently `true`
-(uninstall it first — see below). Otherwise `204` and the row is removed.
+— uninstalling doesn't actually clear this flag (see `DELETE
+/app/<id>/install` below), so such a row can in practice only be removed
+via `DELETE /apps`. Otherwise `204` and the row is removed.
 
 ## `GET /app/<id>`
 
@@ -88,9 +90,9 @@ What actually happens depends on `is_package`:
   extracted or installed** — see
   [../architecture/components.md](../architecture/components.md#known-defects-worth-knowing-before-you-touch-this-code).
 
-  The docs for the underlying downloader also mention a
-  `Content-Disposition` header fallback for when the URL path has no
-  extension. **That fallback is broken and always errors**
+  The downloader also falls back to a `Content-Disposition` header when
+  the URL path has no extension. **That fallback is broken and always
+  errors**
   (`src/installer/app_downloader.py`): `response.headers['content-disposition']`
   raises `KeyError` if the header is absent, and when present,
   `re.findall("filename=(.+)", ...)` returns a **list**, which the next
@@ -120,5 +122,6 @@ bug (`__discover_uninstaller` returns a 2-tuple that is always truthy, then
 attempts to look up element 0 — which may be a full file path or `None` — as
 an extension key in `InstallerFactory`'s extension dict), the runner is never
 resolved, and the uninstall branch is unreachable. Like `POST
-.../install`, this also raises an unhandled exception (`500`) if `app_id`
-doesn't exist — `uninstall()` has the same no-None-check pattern.
+.../install`, this also raises an unhandled exception (`500`) if
+`app_id` doesn't exist — here via an unguarded `app.get_name()` call
+rather than `install()`'s explicit check-and-raise.

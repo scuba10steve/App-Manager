@@ -32,8 +32,7 @@ export FLASK_APP=app.py && export PORT=8080 && flask run --port $PORT --host 0.0
 in the module named by `FLASK_APP`. `app.py` has neither — its `app`
 object only exists inside `main()`'s local scope. Running this command
 raises Flask's "Failed to find Flask application or factory" error. This
-is documented here as a known, pre-existing bug in the repo's own
-scripts — not something this documentation pass fixes.
+is a known, pre-existing bug in the repo's own scripts.
 
 ## Frontend
 
@@ -46,8 +45,8 @@ Pick one:
   python app.py
   ```
   `static/index.html` loads `static/bundle.js` directly; the Flask `/`
-  route redirects there. **This did not work cleanly during this
-  documentation pass** — see the two build caveats in
+  route redirects there. **This currently does not work cleanly** — see
+  the two build caveats in
   [installation.md](installation.md): plain `npm run build` fails outright
   on current Node.js (`ERR_OSSL_EVP_UNSUPPORTED`), and even with the
   `NODE_OPTIONS=--openssl-legacy-provider` workaround, a separate,

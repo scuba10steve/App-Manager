@@ -22,11 +22,9 @@ pip install -r requirements.txt
 ```
 
 **Caveat:** `requirements.txt` pins exact, several-years-old versions
-(e.g. `Flask==1.1.1`, `Werkzeug==1.0.0`). These were not re-verified to
-install on a current Python 3.x during this documentation pass — if
-`pip install` fails on version resolution, you'll need to update the pins
-yourself; that's a real maintenance task, not something these docs
-paper over.
+(e.g. `Flask==1.1.1`, `Werkzeug==1.0.0`) that are not verified to install
+on a current Python 3.x — if `pip install` fails on version resolution,
+you'll need to update the pins yourself; that's a real maintenance task.
 
 ## Frontend (Node) dependencies
 
@@ -39,16 +37,15 @@ matter:
 
 - `npm run build` — runs webpack once, producing `static/bundle.js` (see
   `webpack.config.js`'s `output.path`). Required before `python app.py`
-  will serve a working web UI. **See the caveat immediately below — this
-  did not work cleanly during this documentation pass.**
+  will serve a working web UI — see the build caveat immediately below,
+  which currently fails on modern tooling.
 - `npm start` — runs `webpack-dev-server` on port `8081` with a catch-all
   proxy to `http://localhost:8080` (`webpack.config.js`'s
   `devServer.proxy`), for frontend development against a backend you run
   separately. See [running.md](running.md).
 
-**Caveat — `npm run build` is not verified to work out of the box.** Two
-separate, real problems were found while writing this documentation
-(neither is fixed here — this is a docs-only pass):
+**Caveat — `npm run build` does not work out of the box.** Two separate,
+real problems exist:
 
 1. **Plain `npm run build` fails outright on current Node.js.** On the
    Node version used to verify this doc (`v26.8.1`), it fails immediately
@@ -61,22 +58,20 @@ separate, real problems were found while writing this documentation
      code: 'ERR_OSSL_EVP_UNSUPPORTED'
    ```
 
-   This is the well-known incompatibility between webpack 4's default
-   (MD4-based) module hashing and OpenSSL 3, which Node.js has used by
-   default since Node 17. It is an environment/tooling mismatch, not
-   something introduced by this documentation pass — `package.json` pins
-   `webpack@^4.42.0`, which predates OpenSSL 3. The commonly-known
-   workaround, confirmed to get past this specific error during this
-   verification pass, is:
+   This is the incompatibility between webpack 4's default (MD4-based)
+   module hashing and OpenSSL 3, which Node.js has used by default since
+   Node 17 — an environment/tooling mismatch, not a code defect;
+   `package.json` pins `webpack@^4.42.0`, which predates OpenSSL 3. A
+   known workaround:
 
    ```bash
    NODE_OPTIONS=--openssl-legacy-provider npm run build
    ```
 
-   This is marked **unverified/needs-newer-tooling**: it is not applied
-   anywhere in this repo's own scripts or CI (CI does not run the
-   frontend build at all — see `.github/workflows/github-actions.yml`),
-   and upgrading webpack is the real long-term fix.
+   It is not applied anywhere in this repo's own scripts or CI (CI does
+   not run the frontend build at all — see
+   `.github/workflows/github-actions.yml`), and upgrading webpack is the
+   real long-term fix.
 
 2. **Even with that workaround, the build does not land in `static/`.**
    `webpack.config.js` sets:
@@ -91,11 +86,10 @@ separate, real problems were found while writing this documentation
    `__dirname` has no trailing slash, so this is plain string
    concatenation, not a path join — it produces `.../<checkout-dir
    name>./static/` (note the literal `.` glued onto the checkout
-   directory's name) instead of `.../<checkout-dir name>/static/`. This
-   was confirmed directly during this pass: after a successful build, the
-   real `static/` directory in the repo still had no `bundle.js`, while a
-   sibling directory one level up — named after this checkout's directory
-   with a `.` appended — did.
+   directory's name) instead of `.../<checkout-dir name>/static/`. After
+   a successful build, the real `static/` directory in the repo still
+   had no `bundle.js`, while a sibling directory one level up — named
+   after this checkout's directory with a `.` appended — did.
 
    This is a pre-existing bug in `webpack.config.js`, independent of the
    Node/OpenSSL issue above, and it means `npm run build`'s output is not
@@ -104,8 +98,7 @@ separate, real problems were found while writing this documentation
    `path.resolve(__dirname, 'static')`) and rebuild, or manually move the
    built `bundle.js`/`bundle.js.map` into the repo's `static/` directory
    after each build. Like the broken `flask run` path documented in
-   [running.md](running.md), this is a known, pre-existing repo issue —
-   not something this documentation pass fixes.
+   [running.md](running.md), this is a known, pre-existing repo issue.
 
 Continue to [running.md](running.md) once both sets of dependencies are
 installed.

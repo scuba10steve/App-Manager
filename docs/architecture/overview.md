@@ -2,9 +2,9 @@
 
 App-Manager is a Flask REST API backed by SQLite, paired with a minimal
 React single-page app, for registering, installing, and uninstalling
-applications on the machine it runs on. As of this writing it performs
-installs synchronously and immediately — there is no scheduling concept
-yet (see [current-state-vs-goal.md](current-state-vs-goal.md)).
+applications on the machine it runs on. It performs installs
+synchronously and immediately — there is no scheduling concept yet (see
+[current-state-vs-goal.md](current-state-vs-goal.md)).
 
 ## Request lifecycle
 

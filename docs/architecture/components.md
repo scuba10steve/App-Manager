@@ -49,8 +49,7 @@ Werkzeug's captured `app_id` kwarg makes the call raise `TypeError` (a
 
 ## Known defects worth knowing before you touch this code
 
-These are documented here as **current behavior**, not fixed as part of
-this documentation task (spec: out of scope):
+These are documented as **current behavior**, not fixed:
 
 - **`InstallerFactory` never actually extracts archives.**
   `ApplicationInstaller.install()` (`src/installer/app_installer.py:39-53`)

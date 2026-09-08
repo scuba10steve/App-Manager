@@ -24,9 +24,9 @@ This repo has both a Python backend and a Node frontend.
   the `test` script points at `jest`, which isn't even a declared
   dependency in `package.json`, so `npm test` is a stub that fails with
   a command-not-found error rather than running (or skipping) any tests.
-- **Docs-only changes** (like this one): no code verification needed.
-  Confirm internal doc links resolve and `git diff --stat` is scoped to
-  `docs/`, `README.md`, and `AGENTS.md`.
+- **Docs-only changes:** no code verification needed. Confirm internal
+  doc links resolve and scope the diff to `docs/`, `README.md`, and
+  `AGENTS.md`.
 
 Run the Python and/or frontend check above before committing, matching
 whichever part of the tree you touched.
