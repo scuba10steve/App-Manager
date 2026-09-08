@@ -77,12 +77,13 @@ What actually happens depends on `is_package`:
   flags). `.zip`/`.7z`/`.rar` downloads are fetched but **never
   extracted or installed** — see
   [../architecture/components.md](../architecture/components.md#known-defects-worth-knowing-before-you-touch-this-code).
-- **`is_package: true`** — effectively unreachable via the normal REST flow
-  (since `is_package` always returns `false` from `GET /apps`, as documented above).
-  If somehow reached, would shell out to the host's detected package manager
-  instead of downloading. See
+- **`is_package: true`** — effectively unreachable via the normal REST flow.
+  Although `install()` does load the app's `is_package` field from the database,
+  a string-comparison bug in `AppRepository.load_app()` (`src/repository/app_repo.py:85`)
+  causes `is_package` to always be reconstructed as `False` (the PACKAGE column stores
+  `'1'`/`'0'` but the code compares against `'True'`). See
   [../architecture/components.md](../architecture/components.md#known-defects-worth-knowing-before-you-touch-this-code)
-  for the full mechanism.
+  for details.
 
 ## `DELETE /app/<id>/install`
 
@@ -92,6 +93,4 @@ scanning the install directory for `.exe` files, but due to a tuple-truthiness
 bug (`__discover_uninstaller` returns a 2-tuple that is always truthy, then
 attempts to look up element 0 — which may be a full file path or `None` — as
 an extension key in `InstallerFactory`'s extension dict), the runner is never
-resolved, and the uninstall branch is unreachable. See
-[../architecture/components.md](../architecture/components.md#known-defects-worth-knowing-before-you-touch-this-code)
-for details.
+resolved, and the uninstall branch is unreachable.
