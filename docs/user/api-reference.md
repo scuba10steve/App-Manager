@@ -12,7 +12,9 @@ Route table: see
 Returns every registered app as a JSON array. Fields per app: `name`,
 `source_url`, `system`, `app_id`, `installed`, `has_installer` (always
 `false` — see [../architecture/components.md](../architecture/components.md#known-defects-worth-knowing-before-you-touch-this-code)),
-`has_uninstaller` (same), `is_package`.
+`has_uninstaller` (same), `is_package` (always `false` — the `PACKAGE` column is
+not even selected by `load_apps()`, so the field defaults to `false` in every
+response).
 
 ## `DELETE /apps`
 
@@ -49,8 +51,9 @@ instead of creating a duplicate row (`AppRepository.store_app`).
 
 ## `PUT /app/<id>`
 
-Body: `{"source_url": ..., "system": ..., "name": ...}`, same validation
-as `POST /app`.
+Body: `{"source_url": ..., "system": ..., "name": ...}`. Validation is stricter
+than `POST /app` — URL is validated unconditionally, regardless of `is_package`
+(which is not even accepted as a parameter on this endpoint).
 
 **Known bug — does not persist.** The handler sets the new values on the
 in-memory `Application` object and returns it via `jsonify(app)`, but
@@ -74,17 +77,21 @@ What actually happens depends on `is_package`:
   flags). `.zip`/`.7z`/`.rar` downloads are fetched but **never
   extracted or installed** — see
   [../architecture/components.md](../architecture/components.md#known-defects-worth-knowing-before-you-touch-this-code).
-- **`is_package: true`** — shells out to the host's detected package
-  manager instead of downloading anything. On Windows this uses `choco`.
-  Package-manager installs targeting Homebrew are currently
-  **always broken** regardless of platform — see the `HomebrewRunner`
-  defect in
-  [../architecture/components.md](../architecture/components.md#known-defects-worth-knowing-before-you-touch-this-code).
+- **`is_package: true`** — effectively unreachable via the normal REST flow
+  (since `is_package` always returns `false` from `GET /apps`, as documented above).
+  If somehow reached, would shell out to the host's detected package manager
+  instead of downloading. See
+  [../architecture/components.md](../architecture/components.md#known-defects-worth-knowing-before-you-touch-this-code)
+  for the full mechanism.
 
 ## `DELETE /app/<id>/install`
 
-Uninstall. Only works if the app was installed via the `.exe` path (an
-uninstaller is discovered by scanning the install directory for any
-`.exe` file) and only actually runs on `sys.platform == 'win32'`.
-Otherwise this silently does nothing and still returns `204` — no error
-is raised if uninstall wasn't actually possible.
+Uninstall. **Does not actually run under any condition** — always returns
+`204` having done nothing. The implementation discovers an uninstaller by
+scanning the install directory for `.exe` files, but due to a tuple-truthiness
+bug (`__discover_uninstaller` returns a 2-tuple that is always truthy, then
+attempts to look up element 0 — which may be a full file path or `None` — as
+an extension key in `InstallerFactory`'s extension dict), the runner is never
+resolved, and the uninstall branch is unreachable. See
+[../architecture/components.md](../architecture/components.md#known-defects-worth-knowing-before-you-touch-this-code)
+for details.
