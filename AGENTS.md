@@ -21,7 +21,9 @@ This repo has both a Python backend and a Node frontend.
   Requires the dependencies in `requirements.txt` installed first.
 - **Frontend:** `npm run build` must succeed if you touch anything under
   `src/js/` or `webpack.config.js`. There is no meaningful `npm test` —
-  `jest` is configured but no test files exist yet.
+  the `test` script points at `jest`, which isn't even a declared
+  dependency in `package.json`, so `npm test` is a stub that fails with
+  a command-not-found error rather than running (or skipping) any tests.
 - **Docs-only changes** (like this one): no code verification needed.
   Confirm internal doc links resolve and `git diff --stat` is scoped to
   `docs/`, `README.md`, and `AGENTS.md`.

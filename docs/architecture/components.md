@@ -11,14 +11,21 @@
 | GET | `/app/<id>` | `AppAPI` (`src/manager/app_api.py`) | fetch one app |
 | PUT | `/app/<id>` | `AppAPI` | edit one app — **does not persist**, see [../user/api-reference.md](../user/api-reference.md) |
 | POST | `/app/<id>/install` | `AppInstallAPI` (`src/installer/installer_api.py`) | run the install |
-| DELETE | `/app/<id>/install` | `AppInstallAPI` | run the uninstall |
+| DELETE | `/app/<id>/install` | `AppInstallAPI` | run the uninstall — **never actually runs**, see [../user/api-reference.md](../user/api-reference.md) |
 
 `AppAPI` and `AppRegisterAPI` are two separate `flask_restful` resources
 both bound to the URL pattern `/app/<int:app_id>` under different endpoint
 names (`app_inquiry_update_delete` and `app_registration`, `app.py:58-59`).
-This works because the two resources define non-overlapping HTTP methods
-(`GET`/`PUT` vs. `DELETE`) — Werkzeug dispatches by method, so both rules
-coexist on the same path without conflict.
+This works because the two resources' `app_id`-taking methods don't
+overlap (`GET`/`PUT` on `AppAPI` vs. `DELETE` on `AppRegisterAPI`) —
+Werkzeug dispatches by method, so both rules coexist on the same path
+without conflict for those verbs. There is one exception: `AppRegisterAPI`
+is registered on **both** `/app` and `/app/<int:app_id>`
+(`api.add_resource(AppRegisterAPI, '/app', '/app/<int:app_id>', ...)`,
+`app.py:59`), so `POST /app/<id>` is also routable — it dispatches to
+`AppRegisterAPI.post(self)`, which takes no `app_id` parameter, so
+Werkzeug's captured `app_id` kwarg makes the call raise `TypeError` (a
+`500`). It's a stray, broken route rather than a real capability.
 
 ## Module map
 
@@ -53,7 +60,19 @@ this documentation task (spec: out of scope):
   called — the archive is downloaded and left in
   `./working/cache/installers/`, nothing is installed, and no error is
   raised.
-- **`HomebrewRunner.run()` always raises, on every platform.**
+- **The `is_package=True` install branch 500s before it ever reaches a
+  package-manager runner, on any platform.**
+  `ApplicationInstaller.install()`'s package branch
+  (`src/installer/app_installer.py:51-53`) does
+  `InstallerFactory().with_command('').find()` — an empty string, which is
+  falsy, so `InstallerFactory.find()`'s `if self.command:` check never
+  matches and it returns `None` regardless of whether the host's package
+  manager is `choco`, `apt`, or `brew`. The very next line,
+  `runner.run_cmd(package_manager, [...])`, then raises `AttributeError`
+  (an unhandled `500`) because `runner` is `None`. Note the call is
+  `run_cmd`, not `run` — `ChocoRunner.run()`/`HomebrewRunner.run()` are
+  never reached by this path.
+- **`HomebrewRunner.run()` has its own, separate, unreachable bug.**
   `src/installer/factory/runner.py:41-45`:
   ```python
   def run(self, packages, install_dir=None):
@@ -61,19 +80,45 @@ this documentation task (spec: out of scope):
           raise Exception("Not running a *nix plaform!!! ...")
   ```
   `sys.platform` can never equal both `"linux"` and `"darwin"` at once, so
-  the `or` makes this condition **always true** — the guard fires
-  unconditionally, on Linux, macOS, and Windows alike. `is_package=True`
-  installs targeting `brew` cannot currently succeed on any platform.
+  the `or` makes this condition **always true** — if this method were ever
+  called, it would raise unconditionally on Linux, macOS, and Windows
+  alike. In practice it's dead code: the live install path above calls
+  `run_cmd()` directly and never reaches `HomebrewRunner.run()` (or
+  `ChocoRunner.run()`), so this tautology guard is latent, not the actual
+  failure mechanism for `is_package=True` installs.
 - **`has_installer`/`has_uninstaller` are dead fields.** `Application`
   declares both (`src/model/application.py:14-15`), they're serialized to
   every API response, but nothing in the codebase ever sets either to
   `True`. Treat them as always-`False` placeholders, not real signals.
-- **`is_package` always reads back from the database as `False`.** The
-  `PACKAGE` column is bound with a Python `bool` (`src/repository/app_repo.py:44`),
-  which `sqlite3` coerces to int (`1`/`0`), then SQLite's TEXT affinity converts
-  to string (`'1'`/`'0'`) instead of the intended `'True'`/`'False'`.
-  `AppRepository.load_app` checks `cols['PACKAGE'] == 'True'` (`src/repository/app_repo.py:85`),
-  which never matches `'1'`/`'0'`, so `is_package` is reconstructed as `False`.
-  This makes the package-manager install branch (`src/installer/app_installer.py:50-53`)
-  **unreachable through the normal REST flow** (`POST /app/<id>/install` on a package registration).
+- **`is_package` always reads back from the database as `False` — for two
+  separate, independent reasons.** First: the `PACKAGE` column is bound
+  with a Python `bool` (`src/repository/app_repo.py:44`), which `sqlite3`
+  coerces to int (`1`/`0`), then SQLite's TEXT affinity converts to string
+  (`'1'`/`'0'`) instead of the intended `'True'`/`'False'`.
+  `AppRepository.load_app` checks `cols['PACKAGE'] == 'True'`
+  (`src/repository/app_repo.py:85`), which never matches `'1'`/`'0'`, so
+  `is_package` is reconstructed as `False`. This is what makes the
+  package-manager install branch (`src/installer/app_installer.py:50-53`)
+  **unreachable through the normal REST flow** (`POST /app/<id>/install`
+  on a package registration). Second, and separately: `AppRepository.load_apps()`
+  (used by `GET /apps`) doesn't even select the `PACKAGE` column —
+  its query is `SELECT ID, NAME, SOURCE_URL, SYSTEM, INSTALLED FROM APPS`
+  (`src/repository/app_repo.py:62-63`) — so every app returned from
+  `load_apps()` falls back to the `Application` constructor's default,
+  which is also `False`. `GET /apps` and `GET /app/<id>`/the install path
+  both end up showing `is_package: false`, but via two unrelated bugs.
   See [data-model.md](data-model.md) for the schema details.
+- **Uninstall never actually runs, under any condition.**
+  `ApplicationInstaller.uninstall()`'s helper `__discover_uninstaller`
+  (`src/installer/app_installer.py:80-86`) returns a 2-tuple
+  (`(path_or_None, has_uninstaller)`); `uninstall()` then checks `if ext:`
+  on that tuple (`src/installer/app_installer.py:73`) — a non-empty tuple
+  is always truthy in Python, even `(None, False)`, so this check always
+  passes. It then does `self.factory.with_extension(ext[0]).find()`,
+  looking up `ext[0]` (a full file path, or `None`, when no uninstaller
+  was found) as a key in `InstallerFactory`'s `exe`/`zip`/`7z`/`rar`
+  extension dict — which never matches, so `find()` returns `None` and
+  `runner` stays falsy. `DELETE /app/<id>/install` therefore always
+  returns `204` having done nothing, on every call. See
+  [../user/api-reference.md](../user/api-reference.md) for the fuller
+  walkthrough.

@@ -18,6 +18,11 @@ python app.py
 
 Then visit `http://localhost:8080`.
 
+Both `pip install -r requirements.txt` and `npm run build` have known,
+current issues (stale pinned versions; a Node/OpenSSL incompatibility and
+a wrong output path) — see [installation.md](docs/user/installation.md)
+before assuming this happy path works unmodified.
+
 ## Documentation
 
 - [Architecture docs](docs/architecture/index.md) — how it's built

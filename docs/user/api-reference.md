@@ -64,24 +64,50 @@ values. See `src/manager/app_api.py`'s `AppAPI.put`.
 ## `POST /app/<id>/install`
 
 Synchronous — the request blocks until the install finishes. Returns
-`204` on success. Unlike `PUT`, this path **does** persist: on success it
-sets `installed=True` and calls `update_app()`. Raises an unhandled
-exception (`500`) if `app_id` doesn't exist.
+`204` on completion. Unlike `PUT`, this path **does** persist: it calls
+`app.set_installed(True)` followed by `update_app()` unconditionally, on
+completion of the handler — not only "on success." This runs outside (after)
+the branching that decides whether anything was actually installed, so it
+fires even for a `.zip`/`.7z`/`.rar` download that was never extracted, or
+any non-`.exe` file (`src/installer/app_installer.py:55-56`). Raises an
+unhandled exception (`500`) if `app_id` doesn't exist.
+
+**Consequence:** because `installed` becomes `true` regardless of whether
+anything real happened, the row can become effectively permanent: `DELETE
+/app/<id>` then returns `409` (see below), and `DELETE /app/<id>/install`
+is a no-op that never flips `installed` back (see below) — so the only
+way to remove such a row is `DELETE /apps`, which wipes the whole table.
 
 What actually happens depends on `is_package`:
 
 - **`is_package: false`** — downloads `source_url` to
   `./working/cache/installers/<name>.<ext>` (extension sniffed from the
-  URL path, or from the response's `Content-Disposition` header). Only
+  URL path only — see the `Content-Disposition` note below). Only
   `.exe` downloads are actually run (Windows-only, via silent-install
   flags). `.zip`/`.7z`/`.rar` downloads are fetched but **never
   extracted or installed** — see
   [../architecture/components.md](../architecture/components.md#known-defects-worth-knowing-before-you-touch-this-code).
+
+  The docs for the underlying downloader also mention a
+  `Content-Disposition` header fallback for when the URL path has no
+  extension. **That fallback is broken and always errors**
+  (`src/installer/app_downloader.py`): `response.headers['content-disposition']`
+  raises `KeyError` if the header is absent, and when present,
+  `re.findall("filename=(.+)", ...)` returns a **list**, which the next
+  line then tries to concatenate onto a string (`location + '.' +
+  extension`) — raising `TypeError`. In practice, only URL-path extension
+  sniffing works; a URL with no extension in its path falls into this
+  broken fallback and raises (`500`) rather than being handled
+  gracefully.
 - **`is_package: true`** — effectively unreachable via the normal REST flow.
   Although `install()` does load the app's `is_package` field from the database,
   a string-comparison bug in `AppRepository.load_app()` (`src/repository/app_repo.py:85`)
   causes `is_package` to always be reconstructed as `False` (the PACKAGE column stores
-  `'1'`/`'0'` but the code compares against `'True'`). See
+  `'1'`/`'0'` but the code compares against `'True'`), so the request falls through
+  to the `is_package: false` branch above instead, with `source_url` typically
+  `None` (package registrations aren't required to supply one). `urlparse(None)`
+  followed by `os.path.basename(...).split('.')` then raises `TypeError` on a
+  bytes/str mismatch — so this doesn't silently no-op, it `500`s. See
   [../architecture/components.md](../architecture/components.md#known-defects-worth-knowing-before-you-touch-this-code)
   for details.
 
@@ -93,4 +119,6 @@ scanning the install directory for `.exe` files, but due to a tuple-truthiness
 bug (`__discover_uninstaller` returns a 2-tuple that is always truthy, then
 attempts to look up element 0 — which may be a full file path or `None` — as
 an extension key in `InstallerFactory`'s extension dict), the runner is never
-resolved, and the uninstall branch is unreachable.
+resolved, and the uninstall branch is unreachable. Like `POST
+.../install`, this also raises an unhandled exception (`500`) if `app_id`
+doesn't exist — `uninstall()` has the same no-None-check pattern.

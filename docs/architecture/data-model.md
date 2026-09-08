@@ -16,8 +16,10 @@
 Serialized via `ApplicationEncoder` (a `json.JSONEncoder` subclass,
 `app.json_encoder = ApplicationEncoder` in `app.py:53`) which dumps
 `__dict__` directly — every field above appears in every API response.
-`ApplicationDecoder.decode(json_string)` is the inverse but is only
-exercised by the test suite; no production code path calls it.
+`ApplicationDecoder.decode(json_string)` is the inverse, but it's dead
+code — nothing in `src/`, `app.py`, or `tests/` ever calls it.
+`tests/test_repo.py` only `@patch`es the class (swapping in a mock), it
+never exercises `.decode()` itself.
 
 ## SQLite schema (`apps.db`, created by `AppRepositoryInitializer`)
 
@@ -30,7 +32,7 @@ exercised by the test suite; no production code path calls it.
 | `SOURCE_URL` | TEXT | |
 | `SYSTEM` | TEXT | |
 | `INSTALLED` | TEXT | stores the **string** `'True'`/`'False'`, not a SQLite boolean/integer |
-| `PACKAGE` | TEXT | bound as a Python `bool`, which `sqlite3` coerces to int (`1`/`0`), then SQLite's TEXT affinity converts to string (`'1'`/`'0'`) — **not** `'True'`/`'False'` like `INSTALLED`, causing `is_package` to always read back as `False` (see [components.md](components.md#known-defects-worth-knowing-before-you-touch-this-code)) |
+| `PACKAGE` | TEXT | bound as a Python `bool`, which `sqlite3` coerces to int (`1`/`0`), then SQLite's TEXT affinity converts to string (`'1'`/`'0'`) — **not** `'True'`/`'False'` like `INSTALLED`, causing `is_package` to always read back as `False` on `load_app()` (`GET /app/<id>`, install path). Separately, `load_apps()` (`GET /apps`) doesn't select this column at all, so it reads back as `False` there for an entirely different reason (see [components.md](components.md#known-defects-worth-knowing-before-you-touch-this-code)) |
 
 Indexes: `IDX_DEFAULT` on `(NAME, SYSTEM, SOURCE_URL)`, `IDX_INSTALLED` on
 `(INSTALLED)`. There is **no `UNIQUE` constraint** — de-duplication on
