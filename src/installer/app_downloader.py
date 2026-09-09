@@ -22,8 +22,7 @@ class ApplicationDownloader:
 
             if not extension:
                 extension = re.findall("filename=(.+)", response.headers['content-disposition'])
-
-            location = location + '.' + extension
+                location = location + '.' + extension
 
             with open(location, 'wb') as handle:
                 for block in response.iter_content(1024):
