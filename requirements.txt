@@ -29,7 +29,7 @@ py==1.10.0
 pycodestyle==2.5.0
 PyInstaller==3.6
 pyint==1.1.0
-pylint==2.4.4
+pylint==4.0.9
 pylzma==0.5.0
 pyparsing==2.4.6
 pytest==5.3.5
